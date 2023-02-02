@@ -1,0 +1,24 @@
+<!doctype html>
+<html>
+    <head>
+        <link rel="stylesheet" href="lib/style.css">
+        <script src="lib/script.js"></script>
+    </head>
+    <body>
+        <div id="new-words-wrapper">
+            <textarea id="new-words"></textarea>
+            <button id="learn">Learn!</button>
+        </div>
+        <div id="learn-word-wrapper" class="hidden">
+            <div>
+                <input id="word" type="text" disabled>
+                <input id="user-answer" type="text">
+                <input id="correct-answer" type="text" class="hidden">
+                <button id="check">check</button>
+            </div>
+            <div>
+                <button id='reset-storage'>learn new words</button>
+            </div>
+        </div>
+    </body>
+</html>
