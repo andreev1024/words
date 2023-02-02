@@ -1,4 +1,7 @@
 .hidden {
     display: none;
 }
+.margin-btm {
+    margin-bottom: .3em;
+}
 
