@@ -1,0 +1,1 @@
+https://andreev1024.github.io/words/
