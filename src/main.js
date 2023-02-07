@@ -1,5 +1,3 @@
-"use strict";
-
 import {getAllWords, hasWords, updateWords} from './storage.js';
 import {parseNewWords,getNextWord} from './word.js';
 
