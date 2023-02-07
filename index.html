@@ -2,7 +2,7 @@
 <html>
     <head>
         <link rel="stylesheet" href="lib/style.css">
-        <script src="lib/script.js"></script>
+        <script src="lib/main.js" type="module"></script>
     </head>
     <body>
         <div id="new-words-wrapper">
@@ -11,11 +11,13 @@
         </div>
         <div id="learn-word-wrapper" class="hidden">
             <div class="margin-btm">
-                <input id="word" type="text" disabled>
-                <input id="user-answer" type="text">
+                <div><input id="word" class="width100" type="text" disabled></div>
+                <div><input id="user-answer" class="width100" type="text"></div>
                 <input id="correct-answer" type="text" class="hidden">
-                <button id="check">check</button>
-                <button id="skip">skip</button>
+                <div>
+                    <button id="check">check</button>
+                    <button id="skip">skip</button>
+                </div>
             </div>
             <div>
                 <button id='reset-storage'>learn new words</button>
