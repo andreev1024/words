@@ -11,7 +11,6 @@ import {parseNewWords,getNextWord} from './word.js';
 
 // FEATURES
 //trim eng and ru: должен удалять знаки препинания, по крайней мере запятую, пробелы
-//рандом
 //write tests
 
 //взять подсказку
@@ -44,12 +43,6 @@ function getNewWords()
     }
 
     return parseNewWords(newWords);
-}
-
-//todo rename
-function learnWords(prevWord)
-{
-    showWord(getNextWord(prevWord));
 }
 
 function showWord(word)
@@ -92,7 +85,8 @@ getElement('check').onclick = function() {
         return;
     }
 
-    learnWords(correctAnswer);
+    showWord(getNextWord(correctAnswer));
+
     return;
 }
 getElement('learn').onclick = function() {
@@ -102,7 +96,7 @@ getElement('learn').onclick = function() {
         return;
     }
     updateWords(newWords);
-    learnWords();
+    showWord(getNextWord());
 };
 
 // Get the input field
@@ -134,5 +128,5 @@ getElement('skip').addEventListener('click', function(event) {
 makeMultilinePlaceholder();
 
 if (hasWords()) {
-    learnWords();
+    showWord(getNextWord());
 }

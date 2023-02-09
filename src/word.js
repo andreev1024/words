@@ -73,18 +73,14 @@ export function parseNewWords(input)
 export function getNextWord(prevWord)
 {
     const allWords = getAllWords();
-
-    let nextWord = allWords[0];
     if (prevWord !== undefined) {
         const prevWordIndex = allWords.findIndex((word) => word.en === prevWord);
         if (prevWordIndex === -1) {
             throw new Error('previous word index undefined');
         }
-        const word = allWords[prevWordIndex + 1];
-        if (word !== undefined) {
-            nextWord = word;
-        }
+
+        allWords.splice(prevWordIndex, 1);
     }
 
-    return nextWord;
+    return allWords[Math.floor(Math.random()*allWords.length)];
 }
