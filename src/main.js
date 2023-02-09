@@ -6,14 +6,12 @@ import {parseNewWords,getNextWord} from './word.js';
 // sssss cccccc
 // уууууу uuuuu
 //ффф ааа - ошибка в консоли
-//регистро не зависимное сравнение F - f
 // дефисы, и др знаки
 
 // FEATURES
-//trim eng and ru: должен удалять знаки препинания, по крайней мере запятую, пробелы
-//write tests
-
+// trim answer
 //взять подсказку
+//write tests
 
 //лучше перенести в куки, тогда можно переключаться между устройствами
 //статистика после каждого цикла ИЛИ для сессии
@@ -36,11 +34,7 @@ function getElement(id)
 
 function getNewWords()
 {
-    const newWordsElement = getElement('new-words');
-    const newWords = newWordsElement.value;
-    if (newWords.trim() === '') {
-        return [];
-    }
+    const newWords = getElement('new-words').value;
 
     return parseNewWords(newWords);
 }
@@ -79,13 +73,14 @@ getElement('check').onclick = function() {
     const userAnswerElement = getElement('user-answer');
     const userAnswer = userAnswerElement.value;
     const correctAnswer = getElement('correct-answer').value;
-    if (userAnswer !== correctAnswer) {
+    if (userAnswer.toLowerCase() !== correctAnswer.toLowerCase()) {
         userAnswerElement.classList.add('red');
         setTimeout(() => getElement('user-answer').classList.remove('red'), 1000);
         return;
     }
 
-    showWord(getNextWord(correctAnswer));
+    const nextWord = getNextWord(correctAnswer);
+    showWord(nextWord);
 
     return;
 }

@@ -15,8 +15,12 @@ function unexpectedError(message)
 
 export function parseNewWords(input)
 {
-    const rows = input.split("\n");
     let result = [];
+    if (input.trim() === '') {
+        return result;
+    }
+
+    const rows = input.split("\n");
     rows.forEach(function (rawRow) {
         //todo смена языка должна быть один раз
         const row = rawRow.trim();
@@ -78,7 +82,6 @@ export function getNextWord(prevWord)
         if (prevWordIndex === -1) {
             throw new Error('previous word index undefined');
         }
-
         allWords.splice(prevWordIndex, 1);
     }
 
