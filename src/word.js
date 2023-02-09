@@ -73,7 +73,7 @@ export function parseNewWords(input)
 export function getNextWord(prevWord)
 {
     const allWords = getAllWords();
-    if (prevWord !== undefined) {
+    if (prevWord !== undefined && allWords.length > 1) {
         const prevWordIndex = allWords.findIndex((word) => word.en === prevWord);
         if (prevWordIndex === -1) {
             throw new Error('previous word index undefined');
@@ -82,5 +82,5 @@ export function getNextWord(prevWord)
         allWords.splice(prevWordIndex, 1);
     }
 
-    return allWords[Math.floor(Math.random()*allWords.length)];
+    return allWords[Math.floor(Math.random() * allWords.length)];
 }
