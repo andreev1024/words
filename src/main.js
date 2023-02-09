@@ -2,14 +2,12 @@ import {getAllWords, hasWords, updateWords} from './storage.js';
 import {parseNewWords,getNextWord} from './word.js';
 
 // improve parsing
-
 // sssss cccccc
 // уууууу uuuuu
 //ффф ааа - ошибка в консоли
 // дефисы, и др знаки
 
 // FEATURES
-// trim answer
 //взять подсказку
 //write tests
 
@@ -18,14 +16,11 @@ import {parseNewWords,getNextWord} from './word.js';
 //      слова, где допустил ошибки и какие
 //      общее кол-во пройденных слов и сколько сделал ошибок
 //запоминание слов - yandex translator API
-
 //верстка под разные утсройства
 
-//refactoring
-
+// REFACTORING
 //  ts
-//  addEventListener
-//  заменить кавычки
+//  webpack (1 js file)
 
 function getElement(id)
 {
@@ -41,22 +36,22 @@ function getNewWords()
 
 function showWord(word)
 {
-    getElement('new-words-wrapper').classList.add("hidden");
+    getElement('new-words-wrapper').classList.add('hidden');
 
     getElement('word').value = word.ru;
     getElement('correct-answer').value = word.en;
 
     const userAnswerInput = getElement('user-answer');
     userAnswerInput.value = '';
-    getElement('learn-word-wrapper').classList.remove("hidden");
+    getElement('learn-word-wrapper').classList.remove('hidden');
     userAnswerInput.focus();
 }
 
 function showNewWordsSection()
 {
     getElement('new-words').value = '';
-    getElement('new-words-wrapper').classList.remove("hidden");
-    getElement('learn-word-wrapper').classList.add("hidden");
+    getElement('new-words-wrapper').classList.remove('hidden');
+    getElement('learn-word-wrapper').classList.add('hidden');
 }
 
 function makeMultilinePlaceholder()
@@ -65,15 +60,16 @@ function makeMultilinePlaceholder()
     textarea.placeholder = textarea.placeholder.replace(/\\n/g, '\n');
 }
 
-getElement('reset-storage').onclick = function() {
+getElement('reset-storage').addEventListener('click', () => {
     localStorage.removeItem('words');
     showNewWordsSection();
-}
-getElement('check').onclick = function() {
+});
+
+getElement('check').addEventListener('click', () => {
     const userAnswerElement = getElement('user-answer');
-    const userAnswer = userAnswerElement.value.trim();
+    const userAnswer = userAnswerElement.value;
     const correctAnswer = getElement('correct-answer').value;
-    if (userAnswer.toLowerCase() !== correctAnswer.toLowerCase()) {
+    if (userAnswer.trim().toLowerCase() !== correctAnswer.toLowerCase()) {
         userAnswerElement.classList.add('red');
         setTimeout(() => getElement('user-answer').classList.remove('red'), 1000);
         return;
@@ -83,8 +79,9 @@ getElement('check').onclick = function() {
     showWord(nextWord);
 
     return;
-}
-getElement('learn').onclick = function() {
+});
+
+getElement('learn').addEventListener('click', () => {
     const newWords = getNewWords();
     if (newWords.length === 0) {
         alert('Invalid input');
@@ -92,17 +89,16 @@ getElement('learn').onclick = function() {
     }
     updateWords(newWords);
     showWord(getNextWord());
-};
+});
 
-// Get the input field
-getElement("user-answer").addEventListener("keypress", function(event) {
-    if (event.key === "Enter") {
+getElement('user-answer').addEventListener('keypress', (event) => {
+    if (event.key === 'Enter') {
         event.preventDefault();
-        getElement("check").click();
+        getElement('check').click();
     }
 });
 
-getElement('skip').addEventListener('click', function(event) {
+getElement('skip').addEventListener('click', (event) => {
     const currentWord = getElement('correct-answer').value;
     const nextWord = getNextWord(currentWord);
     const allWords = getAllWords();

@@ -20,7 +20,7 @@ export function parseNewWords(input)
         return result;
     }
 
-    const rows = input.split("\n");
+    const rows = input.split('\n');
     rows.forEach(function (rawRow) {
         //todo смена языка должна быть один раз
         const row = rawRow.trim();
