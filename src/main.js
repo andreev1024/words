@@ -71,7 +71,7 @@ getElement('reset-storage').onclick = function() {
 }
 getElement('check').onclick = function() {
     const userAnswerElement = getElement('user-answer');
-    const userAnswer = userAnswerElement.value;
+    const userAnswer = userAnswerElement.value.trim();
     const correctAnswer = getElement('correct-answer').value;
     if (userAnswer.toLowerCase() !== correctAnswer.toLowerCase()) {
         userAnswerElement.classList.add('red');
