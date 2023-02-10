@@ -1,4 +1,4 @@
-import {getAllWords, hasWords, updateWords} from './storage.js';
+import {getAllWords, hasWords, updateWords, updateMode} from './storage.js';
 import {parseNewWords,getNextWord} from './word.js';
 
 // improve parsing
@@ -8,13 +8,15 @@ import {parseNewWords,getNextWord} from './word.js';
 // дефисы, и др знаки
 
 // FEATURES
+//улучшить рандомайзер. Он должен давать слова более равномерно
 //взять подсказку
 //write tests
-
 //лучше перенести в куки, тогда можно переключаться между устройствами
 //статистика после каждого цикла ИЛИ для сессии
 //      слова, где допустил ошибки и какие
 //      общее кол-во пройденных слов и сколько сделал ошибок
+
+// ADVANCED FEATURES
 //запоминание слов - yandex translator API
 //верстка под разные утсройства
 
@@ -114,6 +116,10 @@ getElement('skip').addEventListener('click', (event) => {
     allWords.length === 0
         ? showNewWordsSection()
         : showWord(nextWord);
+});
+
+getElement('mode').addEventListener('change', (event) => {
+    updateMode(event.target.value);
 });
 
 makeMultilinePlaceholder();

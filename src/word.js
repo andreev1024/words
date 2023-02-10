@@ -1,4 +1,5 @@
-import {getAllWords} from './storage.js';
+import {getAllWords, getMode} from './storage.js';
+import {RANDOM_MODE} from './mode.js';
 
 const cyrillicPattern = /^[\u0400-\u04FF]+$/;
 
@@ -77,13 +78,30 @@ export function parseNewWords(input)
 export function getNextWord(prevWord)
 {
     const allWords = getAllWords();
-    if (prevWord !== undefined && allWords.length > 1) {
-        const prevWordIndex = allWords.findIndex((word) => word.en === prevWord);
+    let prevWordIndex;
+
+    if (prevWord !== undefined) {
+        prevWordIndex = allWords.findIndex((word) => word.en === prevWord);
         if (prevWordIndex === -1) {
             throw new Error('previous word index undefined');
         }
-        allWords.splice(prevWordIndex, 1);
     }
 
-    return allWords[Math.floor(Math.random() * allWords.length)];
+    let nextWord = allWords[0];
+    if (prevWordIndex !== undefined) {
+        const word = allWords[prevWordIndex + 1];
+        if (word !== undefined) {
+            nextWord = word;
+        }
+    }
+
+    if (getMode() === RANDOM_MODE) {
+        if (prevWordIndex !== undefined && allWords.length > 1) {
+            allWords.splice(prevWordIndex, 1);
+        }
+
+        nextWord = allWords[Math.floor(Math.random() * allWords.length)];
+    }
+
+    return nextWord;
 }
