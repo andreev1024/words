@@ -122,6 +122,10 @@ getElement('mode').addEventListener('change', (event) => {
     updateMode(event.target.value);
 });
 
+getElement('show-answer').addEventListener('click', (event) => {
+    getElement('word').value = getElement('correct-answer').value
+});
+
 makeMultilinePlaceholder();
 
 if (hasWords()) {
