@@ -24,6 +24,10 @@ import {parseNewWords,getNextWord} from './word.js';
 //  ts
 //  webpack (1 js file)
 
+function isHidden(element) {
+    return element.offsetParent === null;
+}
+
 function getElement(id)
 {
     return document.getElementById(id);
@@ -124,6 +128,22 @@ getElement('mode').addEventListener('change', (event) => {
 
 getElement('show-answer').addEventListener('click', (event) => {
     getElement('word').value = getElement('correct-answer').value
+});
+
+document.addEventListener('keydown', (event) => {
+
+    if (event.ctrlKey) {
+        const showAnswerElement = getElement('show-answer');
+        if (event.key === 'a' && !isHidden(showAnswerElement)) {
+            showAnswerElement.click();
+            return;
+        }
+        const skipElement = getElement('skip');
+        if (event.key === 's' && !isHidden(skipElement)) {
+            skipElement.click();
+            return;
+        }
+    }
 });
 
 makeMultilinePlaceholder();
