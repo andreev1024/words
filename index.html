@@ -9,7 +9,7 @@
     <body>
         <div id="new-words-wrapper">
             <textarea id="new-words" placeholder="one один\nmother мама\ncat кот" rows="3"></textarea>
-            <button id="learn">Learn!</button>
+            <button id="learn" title="start a learn words session">Learn!</button>
         </div>
         <div id="learn-word-wrapper" class="hidden">
             <div class="margin-btm">
@@ -17,19 +17,19 @@
                 <div><input id="user-answer" class="width100 test" type="text" autocomplete="off"></div>
                 <input id="correct-answer" type="text" class="hidden">
                 <div>
-                    <button id="check">check</button>
-                    <button id="skip"><u>s</u>kip</button>
-                    <button id="show-answer">show <u>a</u>nswer</button>
+                    <button id="check" title="check the answer">check</button>
+                    <button id="skip" title="drop the word from a current set"><u>s</u>kip</button>
+                    <button id="show-answer" title="show the answer">show <u>a</u>nswer</button>
                 </div>
             </div>
             <div>
-                <select id="mode">
+                <select id="mode" title="a learn words mode">
                     <option value="oneByOne">one by one</option>
                     <option value="random">random</option>
                 </select>
             </div>
             <div>
-                <button id='reset-storage'>learn new words</button>
+                <button id="reset-storage" title="finish the current session">learn new words</button>
             </div>
         </div>
     </body>
