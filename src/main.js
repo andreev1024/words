@@ -1,4 +1,4 @@
-import {getAllWords, hasWords, updateWords, updateMode} from './storage.js';
+import {getAllWordsOrException, hasWords, updateWords, updateMode, addWords} from './storage.js';
 import {parseNewWords,getNextWord} from './word.js';
 
 // improve parsing
@@ -8,8 +8,8 @@ import {parseNewWords,getNextWord} from './word.js';
 // дефисы, и др знаки
 
 // FEATURES
+//режим Диктант
 //улучшить рандомайзер. Он должен давать слова более равномерно
-//взять подсказку
 //write tests
 //лучше перенести в куки, тогда можно переключаться между устройствами
 //статистика после каждого цикла ИЛИ для сессии
@@ -21,6 +21,7 @@ import {parseNewWords,getNextWord} from './word.js';
 //верстка под разные утсройства
 
 // REFACTORING
+// use words collection
 //  ts
 //  webpack (1 js file)
 
@@ -93,7 +94,7 @@ getElement('learn').addEventListener('click', () => {
         alert('Invalid input');
         return;
     }
-    updateWords(newWords);
+    addWords(newWords);
     showWord(getNextWord());
 });
 
@@ -107,7 +108,7 @@ getElement('user-answer').addEventListener('keypress', (event) => {
 getElement('skip').addEventListener('click', (event) => {
     const currentWord = getElement('correct-answer').value;
     const nextWord = getNextWord(currentWord);
-    const allWords = getAllWords();
+    const allWords = getAllWordsOrException();
 
     const currentWordIndex = allWords.findIndex((word) => word.en === currentWord);
     if (currentWordIndex === -1) {
@@ -131,7 +132,6 @@ getElement('show-answer').addEventListener('click', (event) => {
 });
 
 document.addEventListener('keydown', (event) => {
-
     if (event.ctrlKey) {
         const showAnswerElement = getElement('show-answer');
         if (event.key === 'a' && !isHidden(showAnswerElement)) {
@@ -144,6 +144,10 @@ document.addEventListener('keydown', (event) => {
             return;
         }
     }
+});
+
+getElement('add-new-words').addEventListener('click', (event) => {
+    showNewWordsSection();
 });
 
 makeMultilinePlaceholder();

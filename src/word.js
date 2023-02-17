@@ -1,4 +1,4 @@
-import {getAllWords, getMode} from './storage.js';
+import {getAllWordsOrException, getMode} from './storage.js';
 import {RANDOM_MODE} from './mode.js';
 
 const cyrillicPattern = /^[\u0400-\u04FF]+$/;
@@ -6,6 +6,18 @@ const cyrillicPattern = /^[\u0400-\u04FF]+$/;
 function Word(en, ru) {
     this.en = en;
     this.ru = ru;
+}
+
+export function Words(words) {
+    this.items = words;
+    this.unique = () => {
+        let uniqueWords = {};
+        this.items.forEach((word) => {
+            uniqueWords[word.en] = word;
+        });
+        return new Words(Object.values(uniqueWords));
+    }
+    this.toArray = () => this.items;
 }
 
 function unexpectedError(message)
@@ -77,7 +89,7 @@ export function parseNewWords(input)
 
 export function getNextWord(prevWord)
 {
-    const allWords = getAllWords();
+    const allWords = getAllWordsOrException();
     let prevWordIndex;
 
     if (prevWord !== undefined) {

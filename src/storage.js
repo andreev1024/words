@@ -1,9 +1,20 @@
 import {ONE_BY_ONE_MODE, allModes} from './mode.js';
+import { Words } from './word.js';
 
-export function getAllWords() {
+export function getAllWordsOrException() {
+    const storedWords = getAllWords();
+    if (storedWords.length === 0) {
+        throw new Error('No stored words');
+    }
+
+    return storedWords;
+}
+
+function getAllWords()
+{
     const storedWords = localStorage.getItem('words');
     if (storedWords === null) {
-        throw new Error('No stored words');
+        return [];
     }
 
     return JSON.parse(storedWords);
@@ -18,8 +29,15 @@ export function hasWords() {
     return JSON.parse(storedWords).length > 0;
 }
 
+//todo replace array with Words collection
 export function updateWords(words) {
-    localStorage.setItem('words', JSON.stringify(words));
+
+    const newWords = JSON.stringify(new Words(words).unique().toArray());
+    localStorage.setItem('words', newWords);
+}
+
+export function addWords(words) {
+    updateWords(getAllWords().concat(words));
 }
 
 export function getMode()
