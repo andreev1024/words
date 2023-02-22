@@ -1,38 +1,32 @@
-import {getAllWordsOrException, getMode} from './storage.js';
-import {RANDOM_MODE} from './mode.js';
-
+import { getAllWordsOrException, getMode } from './storage.js';
+import { RANDOM_MODE } from './mode.js';
 const cyrillicPattern = /^[\u0400-\u04FF]+$/;
-
-function Word(en, ru) {
-    this.en = en;
-    this.ru = ru;
-}
-
-export function Words(words) {
-    this.items = words;
-    this.unique = () => {
+const createWord = (en, ru) => ({
+    en: en,
+    ru: ru
+});
+export const createWords = (words) => ({
+    items: words,
+    unique() {
         let uniqueWords = {};
         this.items.forEach((word) => {
             uniqueWords[word.en] = word;
         });
-        return new Words(Object.values(uniqueWords));
+        return createWords(Object.values(uniqueWords));
+    },
+    toArray() {
+        return this.items;
     }
-    this.toArray = () => this.items;
-}
-
-function unexpectedError(message)
-{
+});
+function unexpectedError(message) {
     alert(message);
     throw new Error(message);
 }
-
-export function parseNewWords(input)
-{
+export function parseNewWords(input) {
     let result = [];
     if (input.trim() === '') {
         return result;
     }
-
     const rows = input.split('\n');
     rows.forEach(function (rawRow) {
         //todo смена языка должна быть один раз
@@ -42,7 +36,7 @@ export function parseNewWords(input)
         }
         let lang = null;
         let anotherLangCharIndex = null;
-        [...row].forEach(function(value, index) {
+        [...row].forEach(function (value, index) {
             if (anotherLangCharIndex) {
                 return;
             }
@@ -50,55 +44,39 @@ export function parseNewWords(input)
                 return;
             }
             const charLang = cyrillicPattern.test(value) ? 'ru' : 'en';
-
             if (lang === null) {
                 lang = charLang;
                 return;
             }
-
             if (lang !== charLang) {
                 if (anotherLangCharIndex !== null) {
-                    unexpectedError('Invalid input')
+                    unexpectedError('Invalid input');
                 }
                 anotherLangCharIndex = index;
                 return;
             }
-        })
-
-        if (anotherLangCharIndex === null) {
+        });
+        if (typeof anotherLangCharIndex !== "number") {
             unexpectedError('Invalid input');
         }
-
         const wordA = row.substring(0, anotherLangCharIndex).trim();
         const wordB = row.substring(anotherLangCharIndex).trim();
-
-        result.push(
-            new Word(
-                !cyrillicPattern.test(wordA[0]) ? wordA : wordB,
-                cyrillicPattern.test(wordA[0]) ? wordA : wordB
-            )
-        );
+        result.push(createWord(!cyrillicPattern.test(wordA[0]) ? wordA : wordB, cyrillicPattern.test(wordA[0]) ? wordA : wordB));
     });
-
     if (result.length === 0) {
-        unexpectedError('Invalid input')
+        unexpectedError('Invalid input');
     }
-
     return result;
 }
-
-export function getNextWord(prevWord)
-{
+export function getNextWord(prevWord) {
     const allWords = getAllWordsOrException();
     let prevWordIndex;
-
     if (prevWord !== undefined) {
         prevWordIndex = allWords.findIndex((word) => word.en === prevWord);
         if (prevWordIndex === -1) {
             throw new Error('previous word index undefined');
         }
     }
-
     let nextWord = allWords[0];
     if (prevWordIndex !== undefined) {
         const word = allWords[prevWordIndex + 1];
@@ -106,14 +84,12 @@ export function getNextWord(prevWord)
             nextWord = word;
         }
     }
-
     if (getMode() === RANDOM_MODE) {
         if (prevWordIndex !== undefined && allWords.length > 1) {
             allWords.splice(prevWordIndex, 1);
         }
-
         nextWord = allWords[Math.floor(Math.random() * allWords.length)];
     }
-
     return nextWord;
 }
+//# sourceMappingURL=word.js.map

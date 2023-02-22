@@ -1,5 +1,9 @@
 import {getAllWordsOrException, hasWords, updateWords, updateMode, addWords} from './storage.js';
-import {parseNewWords,getNextWord} from './word.js';
+import {parseNewWords,getNextWord, Word} from './word.js';
+
+
+// todo
+
 
 // improve parsing
 // sssss cccccc
@@ -8,6 +12,12 @@ import {parseNewWords,getNextWord} from './word.js';
 // дефисы, и др знаки
 
 // FEATURES
+// выгрузить оставшиеся слова. Выучил половину набора. Потом хочу переключиться на новый набор. А позже обьединить и делать оба
+// поддержка одинаковых слов. Например, relief может иметь разные значения в зависимости от контекста. Уникальность должна проверятся по паре слов en-ru
+// изучение в контексте предложения
+//
+
+//если пытаешся добавить новое слово, но не ввел ни одного, то будет ошибка и Пользователь застрянет на этом
 //режим Диктант
 //улучшить рандомайзер. Он должен давать слова более равномерно
 //write tests
@@ -22,33 +32,41 @@ import {parseNewWords,getNextWord} from './word.js';
 
 // REFACTORING
 // use words collection
-//  ts
-//  webpack (1 js file)
+// replace many files with one (bundling)
 
-function isHidden(element) {
+function isHidden(element: HTMLElement) {
     return element.offsetParent === null;
 }
 
-function getElement(id)
+function getElement(id: string): HTMLElement
 {
-    return document.getElementById(id);
+    const element = document.getElementById(id);
+    if (element === null) {
+        throw new Error();
+    }
+    return element;
+}
+
+function getInputElement(id: string): HTMLInputElement
+{
+    return getElement(id) as HTMLInputElement;
 }
 
 function getNewWords()
 {
-    const newWords = getElement('new-words').value;
+    const newWords = (getElement('new-words') as HTMLInputElement).value;
 
     return parseNewWords(newWords);
 }
 
-function showWord(word)
+function showWord(word: Word)
 {
     getElement('new-words-wrapper').classList.add('hidden');
 
-    getElement('word').value = word.ru;
-    getElement('correct-answer').value = word.en;
+    getInputElement('word').value = word.ru;
+    getInputElement('correct-answer').value = word.en;
 
-    const userAnswerInput = getElement('user-answer');
+    const userAnswerInput = getInputElement('user-answer');
     userAnswerInput.value = '';
     getElement('learn-word-wrapper').classList.remove('hidden');
     userAnswerInput.focus();
@@ -56,14 +74,14 @@ function showWord(word)
 
 function showNewWordsSection()
 {
-    getElement('new-words').value = '';
+    getInputElement('new-words').value = '';
     getElement('new-words-wrapper').classList.remove('hidden');
     getElement('learn-word-wrapper').classList.add('hidden');
 }
 
 function makeMultilinePlaceholder()
 {
-    const textarea = getElement('new-words');
+    const textarea = getInputElement('new-words');
     textarea.placeholder = textarea.placeholder.replace(/\\n/g, '\n');
 }
 
@@ -73,9 +91,9 @@ getElement('reset-storage').addEventListener('click', () => {
 });
 
 getElement('check').addEventListener('click', () => {
-    const userAnswerElement = getElement('user-answer');
+    const userAnswerElement = getInputElement('user-answer');
     const userAnswer = userAnswerElement.value;
-    const correctAnswer = getElement('correct-answer').value;
+    const correctAnswer = getInputElement('correct-answer').value;
     if (userAnswer.trim().toLowerCase() !== correctAnswer.toLowerCase()) {
         userAnswerElement.classList.add('red');
         setTimeout(() => getElement('user-answer').classList.remove('red'), 1000);
@@ -106,7 +124,7 @@ getElement('user-answer').addEventListener('keypress', (event) => {
 });
 
 getElement('skip').addEventListener('click', (event) => {
-    const currentWord = getElement('correct-answer').value;
+    const currentWord = getInputElement('correct-answer').value;
     const nextWord = getNextWord(currentWord);
     const allWords = getAllWordsOrException();
 
@@ -124,11 +142,11 @@ getElement('skip').addEventListener('click', (event) => {
 });
 
 getElement('mode').addEventListener('change', (event) => {
-    updateMode(event.target.value);
+    updateMode((event.target as HTMLInputElement).value)
 });
 
 getElement('show-answer').addEventListener('click', (event) => {
-    getElement('word').value = getElement('correct-answer').value
+    getInputElement('word').value = getInputElement('correct-answer').value
 });
 
 document.addEventListener('keydown', (event) => {
