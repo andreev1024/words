@@ -1,4 +1,4 @@
-import {getAllWordsOrException, hasWords, updateWords, updateMode, addWords} from './storage.js';
+import {getAllWordsOrException, hasWords, updateWords, updateMode, addWords, getWord } from './storage.js';
 import {parseNewWords,getNextWord, Word} from './word.js';
 
 
@@ -12,26 +12,31 @@ import {parseNewWords,getNextWord, Word} from './word.js';
 // дефисы, и др знаки
 
 // FEATURES
-// выгрузить оставшиеся слова. Выучил половину набора. Потом хочу переключиться на новый набор. А позже обьединить и делать оба
-// поддержка одинаковых слов. Например, relief может иметь разные значения в зависимости от контекста. Уникальность должна проверятся по паре слов en-ru
-// изучение в контексте предложения
-//
+// H - улучшить рандомайзер. Он должен давать слова более равномерно
 
-//если пытаешся добавить новое слово, но не ввел ни одного, то будет ошибка и Пользователь застрянет на этом
-//режим Диктант
-//улучшить рандомайзер. Он должен давать слова более равномерно
-//write tests
-//лучше перенести в куки, тогда можно переключаться между устройствами
-//статистика после каждого цикла ИЛИ для сессии
+// H - use words collection
+
+// выгрузить оставшиеся слова. Выучил половину набора. Потом хочу переключиться на новый набор. А позже обьединить и делать оба
+// H - поддержка одинаковых слов. Например, relief может иметь разные значения в зависимости от контекста. Уникальность должна проверятся по паре слов en-ru
+// H - изучение в контексте предложения
+
+// M - при нажатии кнопка Show answer сначала показать подсказку а при повторном нажатии скрывать
+// M - если пытаешся добавить новое слово, но не ввел ни одного, то будет ошибка и Пользователь застрянет на этом
+
+// транскрипции. Иногда важно запомнить произношение
+// режим Диктант
+// статистика после каждого цикла ИЛИ для сессии ИЛИ все время
 //      слова, где допустил ошибки и какие
 //      общее кол-во пройденных слов и сколько сделал ошибок
+//
+// write tests
+// лучше перенести в куки, тогда можно переключаться между устройствами
 
 // ADVANCED FEATURES
 //запоминание слов - yandex translator API
 //верстка под разные утсройства
 
 // REFACTORING
-// use words collection
 // replace many files with one (bundling)
 
 function isHidden(element: HTMLElement) {
@@ -146,7 +151,9 @@ getElement('mode').addEventListener('change', (event) => {
 });
 
 getElement('show-answer').addEventListener('click', (event) => {
-    getInputElement('word').value = getInputElement('correct-answer').value
+    const currentWord = getWord(getInputElement('correct-answer').value);
+    const wordElement = getInputElement('word');
+    wordElement.value = wordElement.value === currentWord.ru ? currentWord.en : currentWord.ru;
 });
 
 document.addEventListener('keydown', (event) => {

@@ -16,7 +16,8 @@ const createWord = (en: string, ru: string): Word => ({
 type Words = {
     items: Word[],
     unique: () => Words,
-    toArray: () => Word[]
+    toArray: () => Word[],
+    get: (key: string) => Word
 }
 
 export const createWords = (words: Word[]): Words => ({
@@ -30,6 +31,14 @@ export const createWords = (words: Word[]): Words => ({
     },
     toArray() {
         return this.items
+    },
+    get(key: string): Word {
+        const value = this.items.find((word: Word) => word.en === key);
+        if (value) {
+            return value;
+        }
+
+        throw new Error('Word does not exist');
     }
 })
 

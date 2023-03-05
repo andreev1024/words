@@ -41,6 +41,11 @@ export function addWords(words: Word[]) {
     updateWords(getAllWords().concat(words));
 }
 
+export function getWord(key: string): Word
+{
+    return createWords(getAllWordsOrException()).get(key);
+}
+
 //todo replace with enum
 export function getMode(): string
 {

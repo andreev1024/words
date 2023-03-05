@@ -16,6 +16,13 @@ export const createWords = (words) => ({
     },
     toArray() {
         return this.items;
+    },
+    get(key) {
+        const value = this.items.find((word) => word.en === key);
+        if (value) {
+            return value;
+        }
+        throw new Error('Word does not exist');
     }
 });
 function unexpectedError(message) {

@@ -29,6 +29,9 @@ export function updateWords(words) {
 export function addWords(words) {
     updateWords(getAllWords().concat(words));
 }
+export function getWord(key) {
+    return createWords(getAllWordsOrException()).get(key);
+}
 //todo replace with enum
 export function getMode() {
     return localStorage.getItem('mode') ?? ONE_BY_ONE_MODE;
