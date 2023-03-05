@@ -1,5 +1,6 @@
 import {getAllWordsOrException, hasWords, updateWords, updateMode, addWords, getWord } from './storage.js';
 import {parseNewWords,getNextWord, Word} from './word.js';
+import {Stat, createStat} from './stat.js';
 
 
 // todo
@@ -13,6 +14,8 @@ import {parseNewWords,getNextWord, Word} from './word.js';
 
 // FEATURES
 // H - улучшить рандомайзер. Он должен давать слова более равномерно
+//      D   добавить статистику
+//      *   улучшить рандомайзер
 
 // H - use words collection
 
@@ -39,7 +42,7 @@ import {parseNewWords,getNextWord, Word} from './word.js';
 // REFACTORING
 // replace many files with one (bundling)
 
-function isHidden(element: HTMLElement) {
+function isHidden(element: HTMLElement): boolean {
     return element.offsetParent === null;
 }
 
@@ -105,6 +108,8 @@ getElement('check').addEventListener('click', () => {
         return;
     }
 
+    stat.add(correctAnswer);
+
     const nextWord = getNextWord(correctAnswer);
     showWord(nextWord);
 
@@ -117,6 +122,9 @@ getElement('learn').addEventListener('click', () => {
         alert('Invalid input');
         return;
     }
+
+    stat = createStat();
+
     addWords(newWords);
     showWord(getNextWord());
 });
@@ -128,7 +136,7 @@ getElement('user-answer').addEventListener('keypress', (event) => {
     }
 });
 
-getElement('skip').addEventListener('click', (event) => {
+getElement('skip').addEventListener('click', () => {
     const currentWord = getInputElement('correct-answer').value;
     const nextWord = getNextWord(currentWord);
     const allWords = getAllWordsOrException();
@@ -150,7 +158,7 @@ getElement('mode').addEventListener('change', (event) => {
     updateMode((event.target as HTMLInputElement).value)
 });
 
-getElement('show-answer').addEventListener('click', (event) => {
+getElement('show-answer').addEventListener('click', () => {
     const currentWord = getWord(getInputElement('correct-answer').value);
     const wordElement = getInputElement('word');
     wordElement.value = wordElement.value === currentWord.ru ? currentWord.en : currentWord.ru;
@@ -171,11 +179,13 @@ document.addEventListener('keydown', (event) => {
     }
 });
 
-getElement('add-new-words').addEventListener('click', (event) => {
+getElement('add-new-words').addEventListener('click', () => {
     showNewWordsSection();
 });
 
 makeMultilinePlaceholder();
+
+let stat: Stat = createStat();
 
 if (hasWords()) {
     showWord(getNextWord());

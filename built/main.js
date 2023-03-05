@@ -1,5 +1,6 @@
 import { getAllWordsOrException, hasWords, updateWords, updateMode, addWords, getWord } from './storage.js';
 import { parseNewWords, getNextWord } from './word.js';
+import { createStat } from './stat.js';
 // todo
 // improve parsing
 // sssss cccccc
@@ -8,6 +9,8 @@ import { parseNewWords, getNextWord } from './word.js';
 // дефисы, и др знаки
 // FEATURES
 // H - улучшить рандомайзер. Он должен давать слова более равномерно
+//      D   добавить статистику
+//      *   улучшить рандомайзер
 // H - use words collection
 // выгрузить оставшиеся слова. Выучил половину набора. Потом хочу переключиться на новый набор. А позже обьединить и делать оба
 // H - поддержка одинаковых слов. Например, relief может иметь разные значения в зависимости от контекста. Уникальность должна проверятся по паре слов en-ru
@@ -75,6 +78,7 @@ getElement('check').addEventListener('click', () => {
         setTimeout(() => getElement('user-answer').classList.remove('red'), 1000);
         return;
     }
+    stat.add(correctAnswer);
     const nextWord = getNextWord(correctAnswer);
     showWord(nextWord);
     return;
@@ -85,6 +89,7 @@ getElement('learn').addEventListener('click', () => {
         alert('Invalid input');
         return;
     }
+    stat = createStat();
     addWords(newWords);
     showWord(getNextWord());
 });
@@ -94,7 +99,7 @@ getElement('user-answer').addEventListener('keypress', (event) => {
         getElement('check').click();
     }
 });
-getElement('skip').addEventListener('click', (event) => {
+getElement('skip').addEventListener('click', () => {
     const currentWord = getInputElement('correct-answer').value;
     const nextWord = getNextWord(currentWord);
     const allWords = getAllWordsOrException();
@@ -111,7 +116,7 @@ getElement('skip').addEventListener('click', (event) => {
 getElement('mode').addEventListener('change', (event) => {
     updateMode(event.target.value);
 });
-getElement('show-answer').addEventListener('click', (event) => {
+getElement('show-answer').addEventListener('click', () => {
     const currentWord = getWord(getInputElement('correct-answer').value);
     const wordElement = getInputElement('word');
     wordElement.value = wordElement.value === currentWord.ru ? currentWord.en : currentWord.ru;
@@ -130,10 +135,11 @@ document.addEventListener('keydown', (event) => {
         }
     }
 });
-getElement('add-new-words').addEventListener('click', (event) => {
+getElement('add-new-words').addEventListener('click', () => {
     showNewWordsSection();
 });
 makeMultilinePlaceholder();
+let stat = createStat();
 if (hasWords()) {
     showWord(getNextWord());
 }
