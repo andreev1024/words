@@ -1,4 +1,4 @@
-import { getAllWordsOrException, hasWords, updateWords, updateMode, addWords, getWord } from './storage.js';
+import { getAllWordsOrException, hasWords, updateWords, updateMode, addWords, getWord, getMode } from './storage.js';
 import { parseNewWords, getNextWord } from './word.js';
 import { createStat } from './stat.js';
 // todo
@@ -63,9 +63,12 @@ function showNewWordsSection() {
     getElement('new-words-wrapper').classList.remove('hidden');
     getElement('learn-word-wrapper').classList.add('hidden');
 }
-function makeMultilinePlaceholder() {
+function initMultilinePlaceholder() {
     const textarea = getInputElement('new-words');
     textarea.placeholder = textarea.placeholder.replace(/\\n/g, '\n');
+}
+function initModeDropdown() {
+    getInputElement('mode').value = getMode();
 }
 getElement('reset-storage').addEventListener('click', () => {
     localStorage.removeItem('words');
@@ -140,7 +143,8 @@ document.addEventListener('keydown', (event) => {
 getElement('add-new-words').addEventListener('click', () => {
     showNewWordsSection();
 });
-makeMultilinePlaceholder();
+initMultilinePlaceholder();
+initModeDropdown();
 let stat = createStat();
 if (hasWords()) {
     showWord(getNextWord(stat));

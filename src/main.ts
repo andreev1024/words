@@ -1,4 +1,4 @@
-import {getAllWordsOrException, hasWords, updateWords, updateMode, addWords, getWord } from './storage.js';
+import {getAllWordsOrException, hasWords, updateWords, updateMode, addWords, getWord, getMode } from './storage.js';
 import {parseNewWords, getNextWord, Word} from './word.js';
 import {Stat, createStat} from './stat.js';
 
@@ -90,10 +90,15 @@ function showNewWordsSection()
     getElement('learn-word-wrapper').classList.add('hidden');
 }
 
-function makeMultilinePlaceholder()
+function initMultilinePlaceholder()
 {
     const textarea = getInputElement('new-words');
     textarea.placeholder = textarea.placeholder.replace(/\\n/g, '\n');
+}
+
+function initModeDropdown(): void
+{
+    getInputElement('mode').value = getMode();
 }
 
 getElement('reset-storage').addEventListener('click', () => {
@@ -186,7 +191,8 @@ getElement('add-new-words').addEventListener('click', () => {
     showNewWordsSection();
 });
 
-makeMultilinePlaceholder();
+initMultilinePlaceholder();
+initModeDropdown();
 
 let stat: Stat = createStat();
 
