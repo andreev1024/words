@@ -1,6 +1,7 @@
 export type Stat = {
     items: Record<string, StatItem>,
-    add: (key: string) => void
+    add: (key: string) => void,
+    get: (key: string) => undefined | StatItem
 }
 
 export const createStat = (): Stat => ({
@@ -10,6 +11,9 @@ export const createStat = (): Stat => ({
             this.items[key] = createStatItem();
         }
         this.items[key].inc(key);
+    },
+    get(key: string) {
+        return this.items[key];
     }
 })
 

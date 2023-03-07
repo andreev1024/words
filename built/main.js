@@ -11,6 +11,8 @@ import { createStat } from './stat.js';
 // H - улучшить рандомайзер. Он должен давать слова более равномерно
 //      D   добавить статистику
 //      *   улучшить рандомайзер
+// H - в меню не показывается акрутальный mode
+// H - когда мы берем подсказку курсор прыгает в начало строки (инпута)
 // H - use words collection
 // выгрузить оставшиеся слова. Выучил половину набора. Потом хочу переключиться на новый набор. А позже обьединить и делать оба
 // H - поддержка одинаковых слов. Например, relief может иметь разные значения в зависимости от контекста. Уникальность должна проверятся по паре слов en-ru
@@ -79,7 +81,7 @@ getElement('check').addEventListener('click', () => {
         return;
     }
     stat.add(correctAnswer);
-    const nextWord = getNextWord(correctAnswer);
+    const nextWord = getNextWord(stat, correctAnswer);
     showWord(nextWord);
     return;
 });
@@ -91,7 +93,7 @@ getElement('learn').addEventListener('click', () => {
     }
     stat = createStat();
     addWords(newWords);
-    showWord(getNextWord());
+    showWord(getNextWord(stat));
 });
 getElement('user-answer').addEventListener('keypress', (event) => {
     if (event.key === 'Enter') {
@@ -101,7 +103,7 @@ getElement('user-answer').addEventListener('keypress', (event) => {
 });
 getElement('skip').addEventListener('click', () => {
     const currentWord = getInputElement('correct-answer').value;
-    const nextWord = getNextWord(currentWord);
+    const nextWord = getNextWord(stat, currentWord);
     const allWords = getAllWordsOrException();
     const currentWordIndex = allWords.findIndex((word) => word.en === currentWord);
     if (currentWordIndex === -1) {
@@ -141,6 +143,6 @@ getElement('add-new-words').addEventListener('click', () => {
 makeMultilinePlaceholder();
 let stat = createStat();
 if (hasWords()) {
-    showWord(getNextWord());
+    showWord(getNextWord(stat));
 }
 //# sourceMappingURL=main.js.map

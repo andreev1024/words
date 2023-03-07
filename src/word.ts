@@ -1,5 +1,6 @@
 import {getAllWordsOrException, getMode} from './storage.js';
 import {RANDOM_MODE} from './mode.js';
+import {Stat} from './stat.js';
 
 const cyrillicPattern = /^[\u0400-\u04FF]+$/;
 
@@ -23,7 +24,7 @@ type Words = {
 export const createWords = (words: Word[]): Words => ({
     items: words,
     unique() {
-        let uniqueWords: Record<string, Word> = {};
+        const uniqueWords: Record<string, Word> = {};
         this.items.forEach((word: Word) => {
             uniqueWords[word.en] = word;
         });
@@ -50,7 +51,7 @@ function unexpectedError(message: string): never
 
 export function parseNewWords(input: string): Word[]
 {
-    let result: Word[] = [];
+    const result: Word[] = [];
     if (input.trim() === '') {
         return result;
     }
@@ -110,9 +111,9 @@ export function parseNewWords(input: string): Word[]
     return result;
 }
 
-export function getNextWord(prevWord?: string): Word
+export function getNextWord(stat: Stat, prevWord?: string): Word
 {
-    const allWords = getAllWordsOrException();
+    let allWords = getAllWordsOrException();
     let prevWordIndex;
 
     if (prevWord !== undefined) {
@@ -133,6 +134,27 @@ export function getNextWord(prevWord?: string): Word
     if (getMode() === RANDOM_MODE) {
         if (prevWordIndex !== undefined && allWords.length > 1) {
             allWords.splice(prevWordIndex, 1);
+
+            //todo refactoring
+            let minShows = 0;
+            allWords.forEach((word: Word) => {
+                const statItem = stat.get(word.en);
+                if (!statItem) {
+                    return;
+                }
+                if (minShows === 0 || statItem.shows < minShows) {
+                    minShows = statItem.shows;
+                }
+            });
+
+            const words: Word[] = [];
+            allWords.forEach((word: Word) => {
+                const shows = stat.get(word.en)?.shows ?? 0;
+                if ((shows - minShows) < 2) {
+                    words.push(word);
+                }
+            });
+            allWords = words;
         }
 
         nextWord = allWords[Math.floor(Math.random() * allWords.length)];

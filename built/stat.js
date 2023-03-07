@@ -5,6 +5,9 @@ export const createStat = () => ({
             this.items[key] = createStatItem();
         }
         this.items[key].inc(key);
+    },
+    get(key) {
+        return this.items[key];
     }
 });
 const createStatItem = () => ({

@@ -8,7 +8,7 @@ const createWord = (en, ru) => ({
 export const createWords = (words) => ({
     items: words,
     unique() {
-        let uniqueWords = {};
+        const uniqueWords = {};
         this.items.forEach((word) => {
             uniqueWords[word.en] = word;
         });
@@ -30,7 +30,7 @@ function unexpectedError(message) {
     throw new Error(message);
 }
 export function parseNewWords(input) {
-    let result = [];
+    const result = [];
     if (input.trim() === '') {
         return result;
     }
@@ -75,8 +75,8 @@ export function parseNewWords(input) {
     }
     return result;
 }
-export function getNextWord(prevWord) {
-    const allWords = getAllWordsOrException();
+export function getNextWord(stat, prevWord) {
+    let allWords = getAllWordsOrException();
     let prevWordIndex;
     if (prevWord !== undefined) {
         prevWordIndex = allWords.findIndex((word) => word.en === prevWord);
@@ -94,6 +94,25 @@ export function getNextWord(prevWord) {
     if (getMode() === RANDOM_MODE) {
         if (prevWordIndex !== undefined && allWords.length > 1) {
             allWords.splice(prevWordIndex, 1);
+            //todo refactoring
+            let minShows = 0;
+            allWords.forEach((word) => {
+                const statItem = stat.get(word.en);
+                if (!statItem) {
+                    return;
+                }
+                if (minShows === 0 || statItem.shows < minShows) {
+                    minShows = statItem.shows;
+                }
+            });
+            const words = [];
+            allWords.forEach((word) => {
+                const shows = stat.get(word.en)?.shows ?? 0;
+                if ((shows - minShows) < 2) {
+                    words.push(word);
+                }
+            });
+            allWords = words;
         }
         nextWord = allWords[Math.floor(Math.random() * allWords.length)];
     }

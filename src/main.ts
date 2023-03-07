@@ -1,5 +1,5 @@
 import {getAllWordsOrException, hasWords, updateWords, updateMode, addWords, getWord } from './storage.js';
-import {parseNewWords,getNextWord, Word} from './word.js';
+import {parseNewWords, getNextWord, Word} from './word.js';
 import {Stat, createStat} from './stat.js';
 
 
@@ -16,6 +16,9 @@ import {Stat, createStat} from './stat.js';
 // H - улучшить рандомайзер. Он должен давать слова более равномерно
 //      D   добавить статистику
 //      *   улучшить рандомайзер
+
+// H - в меню не показывается акрутальный mode
+// H - когда мы берем подсказку курсор прыгает в начало строки (инпута)
 
 // H - use words collection
 
@@ -110,7 +113,7 @@ getElement('check').addEventListener('click', () => {
 
     stat.add(correctAnswer);
 
-    const nextWord = getNextWord(correctAnswer);
+    const nextWord = getNextWord(stat, correctAnswer);
     showWord(nextWord);
 
     return;
@@ -126,7 +129,7 @@ getElement('learn').addEventListener('click', () => {
     stat = createStat();
 
     addWords(newWords);
-    showWord(getNextWord());
+    showWord(getNextWord(stat));
 });
 
 getElement('user-answer').addEventListener('keypress', (event) => {
@@ -138,7 +141,7 @@ getElement('user-answer').addEventListener('keypress', (event) => {
 
 getElement('skip').addEventListener('click', () => {
     const currentWord = getInputElement('correct-answer').value;
-    const nextWord = getNextWord(currentWord);
+    const nextWord = getNextWord(stat, currentWord);
     const allWords = getAllWordsOrException();
 
     const currentWordIndex = allWords.findIndex((word) => word.en === currentWord);
@@ -188,5 +191,5 @@ makeMultilinePlaceholder();
 let stat: Stat = createStat();
 
 if (hasWords()) {
-    showWord(getNextWord());
+    showWord(getNextWord(stat));
 }
