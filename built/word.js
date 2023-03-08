@@ -108,7 +108,7 @@ export function getNextWord(stat, prevWord) {
             const words = [];
             allWords.forEach((word) => {
                 const shows = stat.get(word.en)?.shows ?? 0;
-                if ((shows - minShows) < 2) {
+                if ((shows - minShows) < 1) {
                     words.push(word);
                 }
             });
