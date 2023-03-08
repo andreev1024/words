@@ -8,11 +8,6 @@ import { createStat } from './stat.js';
 //ффф ааа - ошибка в консоли
 // дефисы, и др знаки
 // FEATURES
-// H - улучшить рандомайзер. Он должен давать слова более равномерно
-//      D   добавить статистику
-//      *   улучшить рандомайзер
-// H - в меню не показывается акрутальный mode
-// H - когда мы берем подсказку курсор прыгает в начало строки (инпута)
 // H - use words collection
 // выгрузить оставшиеся слова. Выучил половину набора. Потом хочу переключиться на новый набор. А позже обьединить и делать оба
 // H - поддержка одинаковых слов. Например, relief может иметь разные значения в зависимости от контекста. Уникальность должна проверятся по паре слов en-ru
@@ -31,6 +26,7 @@ import { createStat } from './stat.js';
 //запоминание слов - yandex translator API
 //верстка под разные утсройства
 // REFACTORING
+// https://learn.javascript.ru/event-delegation
 // replace many files with one (bundling)
 function isHidden(element) {
     return element.offsetParent === null;
@@ -70,11 +66,26 @@ function initMultilinePlaceholder() {
 function initModeDropdown() {
     getInputElement('mode').value = getMode();
 }
-getElement('reset-storage').addEventListener('click', () => {
-    localStorage.removeItem('words');
-    showNewWordsSection();
-});
-getElement('check').addEventListener('click', () => {
+const showAnswer = () => {
+    const currentWord = getWord(getInputElement('correct-answer').value);
+    const wordElement = getInputElement('word');
+    wordElement.value = wordElement.value === currentWord.ru ? currentWord.en : currentWord.ru;
+};
+const skipWord = () => {
+    const currentWord = getInputElement('correct-answer').value;
+    const nextWord = getNextWord(stat, currentWord);
+    const allWords = getAllWordsOrException();
+    const currentWordIndex = allWords.findIndex((word) => word.en === currentWord);
+    if (currentWordIndex === -1) {
+        throw new Error("word doesn't exist");
+    }
+    allWords.splice(currentWordIndex, 1);
+    updateWords(allWords);
+    allWords.length === 0
+        ? showNewWordsSection()
+        : showWord(nextWord);
+};
+const checkWord = () => {
     const userAnswerElement = getInputElement('user-answer');
     const userAnswer = userAnswerElement.value;
     const correctAnswer = getInputElement('correct-answer').value;
@@ -86,7 +97,23 @@ getElement('check').addEventListener('click', () => {
     stat.add(correctAnswer);
     const nextWord = getNextWord(stat, correctAnswer);
     showWord(nextWord);
-    return;
+};
+const documentKeydownHandler = (event) => {
+    if (event.ctrlKey) {
+        if (event.key === 'a' && !isHidden(getElement('show-answer'))) {
+            showAnswer();
+            event.preventDefault();
+            return;
+        }
+        if (event.key === 's' && !isHidden(getElement('skip'))) {
+            skipWord();
+            return;
+        }
+    }
+};
+getElement('reset-storage').addEventListener('click', () => {
+    localStorage.removeItem('words');
+    showNewWordsSection();
 });
 getElement('learn').addEventListener('click', () => {
     const newWords = getNewWords();
@@ -100,49 +127,15 @@ getElement('learn').addEventListener('click', () => {
 });
 getElement('user-answer').addEventListener('keypress', (event) => {
     if (event.key === 'Enter') {
-        event.preventDefault();
-        getElement('check').click();
+        checkWord();
     }
 });
-getElement('skip').addEventListener('click', () => {
-    const currentWord = getInputElement('correct-answer').value;
-    const nextWord = getNextWord(stat, currentWord);
-    const allWords = getAllWordsOrException();
-    const currentWordIndex = allWords.findIndex((word) => word.en === currentWord);
-    if (currentWordIndex === -1) {
-        throw new Error("word doesn't exist");
-    }
-    allWords.splice(currentWordIndex, 1);
-    updateWords(allWords);
-    allWords.length === 0
-        ? showNewWordsSection()
-        : showWord(nextWord);
-});
-getElement('mode').addEventListener('change', (event) => {
-    updateMode(event.target.value);
-});
-getElement('show-answer').addEventListener('click', () => {
-    const currentWord = getWord(getInputElement('correct-answer').value);
-    const wordElement = getInputElement('word');
-    wordElement.value = wordElement.value === currentWord.ru ? currentWord.en : currentWord.ru;
-});
-document.addEventListener('keydown', (event) => {
-    if (event.ctrlKey) {
-        const showAnswerElement = getElement('show-answer');
-        if (event.key === 'a' && !isHidden(showAnswerElement)) {
-            showAnswerElement.click();
-            return;
-        }
-        const skipElement = getElement('skip');
-        if (event.key === 's' && !isHidden(skipElement)) {
-            skipElement.click();
-            return;
-        }
-    }
-});
-getElement('add-new-words').addEventListener('click', () => {
-    showNewWordsSection();
-});
+getElement('check').addEventListener('click', checkWord);
+getElement('mode').addEventListener('change', (event) => updateMode(event.target.value));
+getElement('skip').addEventListener('click', skipWord);
+getElement('show-answer').addEventListener('click', showAnswer);
+getElement('add-new-words').addEventListener('click', () => showNewWordsSection());
+document.addEventListener('keydown', documentKeydownHandler);
 initMultilinePlaceholder();
 initModeDropdown();
 let stat = createStat();
