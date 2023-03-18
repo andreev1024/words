@@ -77,6 +77,10 @@ export function parseNewWords(input) {
 }
 export function getNextWord(stat, prevWord) {
     let allWords = getAllWordsOrException();
+    let nextWord = allWords[0];
+    if (allWords.length === 1) {
+        return nextWord;
+    }
     let prevWordIndex;
     if (prevWord !== undefined) {
         prevWordIndex = allWords.findIndex((word) => word.en === prevWord);
@@ -84,7 +88,6 @@ export function getNextWord(stat, prevWord) {
             throw new Error('previous word index undefined');
         }
     }
-    let nextWord = allWords[0];
     if (prevWordIndex !== undefined) {
         const word = allWords[prevWordIndex + 1];
         if (word !== undefined) {
@@ -92,19 +95,9 @@ export function getNextWord(stat, prevWord) {
         }
     }
     if (getMode() === RANDOM_MODE) {
-        if (prevWordIndex !== undefined && allWords.length > 1) {
+        if (prevWordIndex !== undefined) {
             allWords.splice(prevWordIndex, 1);
-            //todo refactoring
-            let minShows = 0;
-            allWords.forEach((word) => {
-                const statItem = stat.get(word.en);
-                if (!statItem) {
-                    return;
-                }
-                if (minShows === 0 || statItem.shows < minShows) {
-                    minShows = statItem.shows;
-                }
-            });
+            const minShows = Math.min(...allWords.map((word) => stat.get(word.en)?.shows ?? 0));
             const words = [];
             allWords.forEach((word) => {
                 const shows = stat.get(word.en)?.shows ?? 0;
