@@ -1,6 +1,7 @@
 import { getAllWordsOrException, hasWords, updateWords, updateMode, addWords, getWord, getMode } from './storage.js';
 import { parseNewWords, getNextWord } from './word.js';
 import { createStat } from './stat.js';
+import { isHidden, getElement, getInputElement } from './html.js';
 // todo
 // improve parsing
 // sssss cccccc
@@ -8,14 +9,12 @@ import { createStat } from './stat.js';
 //ффф ааа - ошибка в консоли
 // дефисы, и др знаки
 // FEATURES
-// H - выпилить one-by-one mode
-// H - use words collection
+// H - редактировать одну пару слов
+// H - просмотр статистики (кол-во показов, ошибок). Полезно что бы понимать какие слова стоит взять в сл.сессию
 // H - выгрузить оставшиеся слова. Выучил половину набора. Потом хочу переключиться на новый набор. А позже обьединить и делать оба
-// H - поддержка одинаковых слов. Например, relief может иметь разные значения в зависимости от контекста. Уникальность должна проверятся по паре слов en-ru
-// H - изучение в контексте предложения
-// редактировать одну пару слов
-// M - при нажатии кнопка Show answer сначала показать подсказку а при повторном нажатии скрывать
+// M - изучение в контексте предложения
 // M - если пытаешся добавить новое слово, но не ввел ни одного, то будет ошибка и Пользователь застрянет на этом
+// L - выпилить one-by-one mode
 // транскрипции. Иногда важно запомнить произношение
 // режим Диктант
 // статистика после каждого цикла ИЛИ для сессии ИЛИ все время
@@ -30,24 +29,19 @@ import { createStat } from './stat.js';
 // REFACTORING
 // https://learn.javascript.ru/event-delegation
 // replace many files with one (bundling)
-function isHidden(element) {
-    return element.offsetParent === null;
-}
-function getElement(id) {
-    const element = document.getElementById(id);
-    if (element === null) {
-        throw new Error();
-    }
-    return element;
-}
-function getInputElement(id) {
-    return getElement(id);
-}
-function getNewWords() {
+// use words collection instead Word[]
+const initMultilinePlaceholder = () => {
+    const textarea = getInputElement('new-words');
+    textarea.placeholder = textarea.placeholder.replace(/\\n/g, '\n');
+};
+const initModeDropdown = () => {
+    getInputElement('mode').value = getMode();
+};
+const getNewWords = () => {
     const newWords = getElement('new-words').value;
     return parseNewWords(newWords);
-}
-function showWord(word) {
+};
+const showWord = (word) => {
     getElement('new-words-wrapper').classList.add('hidden');
     getInputElement('word').value = word.ru;
     getInputElement('correct-answer').value = word.en;
@@ -55,19 +49,12 @@ function showWord(word) {
     userAnswerInput.value = '';
     getElement('learn-word-wrapper').classList.remove('hidden');
     userAnswerInput.focus();
-}
-function showNewWordsSection() {
+};
+const showNewWordsSection = () => {
     getInputElement('new-words').value = '';
     getElement('new-words-wrapper').classList.remove('hidden');
     getElement('learn-word-wrapper').classList.add('hidden');
-}
-function initMultilinePlaceholder() {
-    const textarea = getInputElement('new-words');
-    textarea.placeholder = textarea.placeholder.replace(/\\n/g, '\n');
-}
-function initModeDropdown() {
-    getInputElement('mode').value = getMode();
-}
+};
 const showAnswer = () => {
     const currentWord = getWord(getInputElement('correct-answer').value);
     const wordElement = getInputElement('word');

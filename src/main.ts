@@ -1,6 +1,7 @@
 import {getAllWordsOrException, hasWords, updateWords, updateMode, addWords, getWord, getMode } from './storage.js';
 import {parseNewWords, getNextWord, Word} from './word.js';
 import {Stat, createStat} from './stat.js';
+import {isHidden, getElement, getInputElement} from './html.js';
 
 
 // todo
@@ -14,17 +15,14 @@ import {Stat, createStat} from './stat.js';
 
 // FEATURES
 
-// H - выпилить one-by-one mode
-// H - use words collection
+// H - редактировать одну пару слов
+// H - просмотр статистики (кол-во показов, ошибок). Полезно что бы понимать какие слова стоит взять в сл.сессию
 // H - выгрузить оставшиеся слова. Выучил половину набора. Потом хочу переключиться на новый набор. А позже обьединить и делать оба
-// H - поддержка одинаковых слов. Например, relief может иметь разные значения в зависимости от контекста. Уникальность должна проверятся по паре слов en-ru
-// H - изучение в контексте предложения
 
-
-// редактировать одну пару слов
-
-// M - при нажатии кнопка Show answer сначала показать подсказку а при повторном нажатии скрывать
+// M - изучение в контексте предложения
 // M - если пытаешся добавить новое слово, но не ввел ни одного, то будет ошибка и Пользователь застрянет на этом
+
+// L - выпилить one-by-one mode
 
 // транскрипции. Иногда важно запомнить произношение
 // режим Диктант
@@ -42,34 +40,27 @@ import {Stat, createStat} from './stat.js';
 // REFACTORING
 // https://learn.javascript.ru/event-delegation
 // replace many files with one (bundling)
+// use words collection instead Word[]
 
-function isHidden(element: HTMLElement): boolean {
-    return element.offsetParent === null;
-}
 
-function getElement(id: string): HTMLElement
-{
-    const element = document.getElementById(id);
-    if (element === null) {
-        throw new Error();
-    }
-    return element;
-}
+const initMultilinePlaceholder = () => {
+    const textarea = getInputElement('new-words');
+    textarea.placeholder = textarea.placeholder.replace(/\\n/g, '\n');
+};
 
-function getInputElement(id: string): HTMLInputElement
-{
-    return getElement(id) as HTMLInputElement;
-}
+const initModeDropdown = (): void => {
+    getInputElement('mode').value = getMode();
+};
 
-function getNewWords()
-{
+
+
+const getNewWords = () => {
     const newWords = (getElement('new-words') as HTMLInputElement).value;
 
     return parseNewWords(newWords);
-}
+};
 
-function showWord(word: Word)
-{
+const showWord = (word: Word) => {
     getElement('new-words-wrapper').classList.add('hidden');
 
     getInputElement('word').value = word.ru;
@@ -79,25 +70,13 @@ function showWord(word: Word)
     userAnswerInput.value = '';
     getElement('learn-word-wrapper').classList.remove('hidden');
     userAnswerInput.focus();
-}
+};
 
-function showNewWordsSection()
-{
+const showNewWordsSection = () => {
     getInputElement('new-words').value = '';
     getElement('new-words-wrapper').classList.remove('hidden');
     getElement('learn-word-wrapper').classList.add('hidden');
-}
-
-function initMultilinePlaceholder()
-{
-    const textarea = getInputElement('new-words');
-    textarea.placeholder = textarea.placeholder.replace(/\\n/g, '\n');
-}
-
-function initModeDropdown(): void
-{
-    getInputElement('mode').value = getMode();
-}
+};
 
 const showAnswer = () => {
     const currentWord = getWord(getInputElement('correct-answer').value);
@@ -138,6 +117,8 @@ const checkWord = () => {
     const nextWord = getNextWord(stat, correctAnswer);
     showWord(nextWord);
 }
+
+
 
 const documentKeydownHandler = (event: KeyboardEvent) => {
     if (event.ctrlKey) {
