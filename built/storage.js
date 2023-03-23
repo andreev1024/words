@@ -26,6 +26,11 @@ export function updateWords(words) {
     const newWords = JSON.stringify(createWords(words).unique().toArray());
     localStorage.setItem('words', newWords);
 }
+export function replaceWord(prevWordKey, newWord) {
+    const words = [];
+    getAllWordsOrException().forEach((word) => words.push(word.en === prevWordKey ? newWord : word));
+    updateWords(words);
+}
 export function addWords(words) {
     updateWords(getAllWords().concat(words));
 }

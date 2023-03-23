@@ -1,9 +1,9 @@
 import { getAllWordsOrException, getMode } from './storage.js';
 import { RANDOM_MODE } from './mode.js';
 const cyrillicPattern = /^[\u0400-\u04FF]+$/;
-const createWord = (en, ru) => ({
+export const createWord = (en, ru) => ({
     en: en,
-    ru: ru
+    ru: ru,
 });
 export const createWords = (words) => ({
     items: words,
@@ -18,12 +18,15 @@ export const createWords = (words) => ({
         return this.items;
     },
     get(key) {
-        const value = this.items.find((word) => word.en === key);
+        const value = this.find(key);
         if (value) {
             return value;
         }
         throw new Error('Word does not exist');
-    }
+    },
+    find(key) {
+        return this.items.find((word) => word.en === key);
+    },
 });
 function unexpectedError(message) {
     alert(message);
@@ -63,7 +66,7 @@ export function parseNewWords(input) {
                 return;
             }
         });
-        if (typeof anotherLangCharIndex !== "number") {
+        if (typeof anotherLangCharIndex !== 'number') {
             unexpectedError('Invalid input');
         }
         const wordA = row.substring(0, anotherLangCharIndex).trim();
@@ -101,7 +104,7 @@ export function getNextWord(stat, prevWord) {
             const words = [];
             allWords.forEach((word) => {
                 const shows = stat.get(word.en)?.shows ?? 0;
-                if ((shows - minShows) < 1) {
+                if (shows - minShows < 1) {
                     words.push(word);
                 }
             });

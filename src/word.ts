@@ -1,25 +1,26 @@
-import {getAllWordsOrException, getMode} from './storage.js';
-import {RANDOM_MODE} from './mode.js';
-import {Stat} from './stat.js';
+import { getAllWordsOrException, getMode } from './storage.js';
+import { RANDOM_MODE } from './mode.js';
+import { Stat } from './stat.js';
 
 const cyrillicPattern = /^[\u0400-\u04FF]+$/;
 
 export type Word = {
-    en: string,
-    ru: string
-}
+    en: string;
+    ru: string;
+};
 
-const createWord = (en: string, ru: string): Word => ({
+export const createWord = (en: string, ru: string): Word => ({
     en: en,
-    ru: ru
-})
+    ru: ru,
+});
 
 type Words = {
-    items: Word[],
-    unique: () => Words,
-    toArray: () => Word[],
-    get: (key: string) => Word
-}
+    items: Word[];
+    unique: () => Words;
+    toArray: () => Word[];
+    get: (key: string) => Word;
+    find: (key: string) => undefined | Word;
+};
 
 export const createWords = (words: Word[]): Words => ({
     items: words,
@@ -31,26 +32,27 @@ export const createWords = (words: Word[]): Words => ({
         return createWords(Object.values(uniqueWords));
     },
     toArray() {
-        return this.items
+        return this.items;
     },
     get(key: string): Word {
-        const value = this.items.find((word: Word) => word.en === key);
+        const value = this.find(key);
         if (value) {
             return value;
         }
 
         throw new Error('Word does not exist');
-    }
-})
+    },
+    find(key: string): undefined | Word {
+        return this.items.find((word: Word) => word.en === key);
+    },
+});
 
-function unexpectedError(message: string): never
-{
+function unexpectedError(message: string): never {
     alert(message);
     throw new Error(message);
 }
 
-export function parseNewWords(input: string): Word[]
-{
+export function parseNewWords(input: string): Word[] {
     const result: Word[] = [];
     if (input.trim() === '') {
         return result;
@@ -63,9 +65,9 @@ export function parseNewWords(input: string): Word[]
         if (row === '') {
             return;
         }
-        let lang: null|string = null;
-        let anotherLangCharIndex: null|number = null;
-        [...row].forEach(function(value, index) {
+        let lang: null | string = null;
+        let anotherLangCharIndex: null | number = null;
+        [...row].forEach(function (value, index) {
             if (anotherLangCharIndex) {
                 return;
             }
@@ -81,15 +83,14 @@ export function parseNewWords(input: string): Word[]
 
             if (lang !== charLang) {
                 if (anotherLangCharIndex !== null) {
-                    unexpectedError('Invalid input')
+                    unexpectedError('Invalid input');
                 }
                 anotherLangCharIndex = index;
                 return;
             }
-        })
+        });
 
-
-        if (typeof anotherLangCharIndex !== "number") {
+        if (typeof anotherLangCharIndex !== 'number') {
             unexpectedError('Invalid input');
         }
 
@@ -105,14 +106,13 @@ export function parseNewWords(input: string): Word[]
     });
 
     if (result.length === 0) {
-        unexpectedError('Invalid input')
+        unexpectedError('Invalid input');
     }
 
     return result;
 }
 
-export function getNextWord(stat: Stat, prevWord?: string): Word
-{
+export function getNextWord(stat: Stat, prevWord?: string): Word {
     let allWords = getAllWordsOrException();
     let nextWord = allWords[0];
     if (allWords.length === 1) {
@@ -137,11 +137,13 @@ export function getNextWord(stat: Stat, prevWord?: string): Word
     if (getMode() === RANDOM_MODE) {
         if (prevWordIndex !== undefined) {
             allWords.splice(prevWordIndex, 1);
-            const minShows = Math.min(...allWords.map((word: Word) => stat.get(word.en)?.shows ?? 0));
+            const minShows = Math.min(
+                ...allWords.map((word: Word) => stat.get(word.en)?.shows ?? 0)
+            );
             const words: Word[] = [];
             allWords.forEach((word: Word) => {
                 const shows = stat.get(word.en)?.shows ?? 0;
-                if ((shows - minShows) < 1) {
+                if (shows - minShows < 1) {
                     words.push(word);
                 }
             });

@@ -7,4 +7,10 @@ export const getElement = (id) => {
     return element;
 };
 export const getInputElement = (id) => getElement(id);
+export const hide = (elem) => {
+    elem.classList.add('hidden');
+};
+export const show = (elem) => {
+    elem.classList.remove('hidden');
+};
 //# sourceMappingURL=html.js.map

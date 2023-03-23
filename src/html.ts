@@ -8,4 +8,13 @@ export const getElement = (id: string): HTMLElement => {
     return element;
 };
 
-export const getInputElement = (id: string): HTMLInputElement => getElement(id) as HTMLInputElement;
+export const getInputElement = (id: string): HTMLInputElement =>
+    getElement(id) as HTMLInputElement;
+
+export const hide = (elem: HTMLElement) => {
+    elem.classList.add('hidden');
+};
+
+export const show = (elem: HTMLElement) => {
+    elem.classList.remove('hidden');
+};

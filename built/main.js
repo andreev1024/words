@@ -1,7 +1,9 @@
-import { getAllWordsOrException, hasWords, updateWords, updateMode, addWords, getWord, getMode } from './storage.js';
+import { LearnWord } from './LearnWord.js';
+import { getAllWordsOrException, hasWords, updateWords, updateMode, addWords, getWord, getMode, } from './storage.js';
 import { parseNewWords, getNextWord } from './word.js';
-import { createStat } from './stat.js';
+import { stat } from './stat.js';
 import { isHidden, getElement, getInputElement } from './html.js';
+import { EditWord } from './EditWord.js';
 // todo
 // improve parsing
 // sssss cccccc
@@ -9,7 +11,7 @@ import { isHidden, getElement, getInputElement } from './html.js';
 //ффф ааа - ошибка в консоли
 // дефисы, и др знаки
 // FEATURES
-// H - редактировать одну пару слов
+// H - когда при edit такое слово уже существует (было аа  и aaa в бд. Обновляю aa на aaa и получаю ошибку)
 // H - просмотр статистики (кол-во показов, ошибок). Полезно что бы понимать какие слова стоит взять в сл.сессию
 // H - выгрузить оставшиеся слова. Выучил половину набора. Потом хочу переключиться на новый набор. А позже обьединить и делать оба
 // M - изучение в контексте предложения
@@ -30,6 +32,8 @@ import { isHidden, getElement, getInputElement } from './html.js';
 // https://learn.javascript.ru/event-delegation
 // replace many files with one (bundling)
 // use words collection instead Word[]
+// replace duplicates in html
+// use state, not html (data attributes, current word)
 const initMultilinePlaceholder = () => {
     const textarea = getInputElement('new-words');
     textarea.placeholder = textarea.placeholder.replace(/\\n/g, '\n');
@@ -41,15 +45,6 @@ const getNewWords = () => {
     const newWords = getElement('new-words').value;
     return parseNewWords(newWords);
 };
-const showWord = (word) => {
-    getElement('new-words-wrapper').classList.add('hidden');
-    getInputElement('word').value = word.ru;
-    getInputElement('correct-answer').value = word.en;
-    const userAnswerInput = getInputElement('user-answer');
-    userAnswerInput.value = '';
-    getElement('learn-word-wrapper').classList.remove('hidden');
-    userAnswerInput.focus();
-};
 const showNewWordsSection = () => {
     getInputElement('new-words').value = '';
     getElement('new-words-wrapper').classList.remove('hidden');
@@ -58,7 +53,8 @@ const showNewWordsSection = () => {
 const showAnswer = () => {
     const currentWord = getWord(getInputElement('correct-answer').value);
     const wordElement = getInputElement('word');
-    wordElement.value = wordElement.value === currentWord.ru ? currentWord.en : currentWord.ru;
+    wordElement.value =
+        wordElement.value === currentWord.ru ? currentWord.en : currentWord.ru;
 };
 const skipWord = () => {
     const currentWord = getInputElement('correct-answer').value;
@@ -70,9 +66,7 @@ const skipWord = () => {
     }
     allWords.splice(currentWordIndex, 1);
     updateWords(allWords);
-    allWords.length === 0
-        ? showNewWordsSection()
-        : showWord(nextWord);
+    allWords.length === 0 ? showNewWordsSection() : LearnWord.show(nextWord);
 };
 const checkWord = () => {
     const userAnswerElement = getInputElement('user-answer');
@@ -85,7 +79,7 @@ const checkWord = () => {
     }
     stat.add(correctAnswer);
     const nextWord = getNextWord(stat, correctAnswer);
-    showWord(nextWord);
+    LearnWord.show(nextWord);
 };
 const documentKeydownHandler = (event) => {
     if (event.ctrlKey) {
@@ -110,9 +104,9 @@ getElement('learn').addEventListener('click', () => {
         alert('Invalid input');
         return;
     }
-    stat = createStat();
+    stat.reset();
     addWords(newWords);
-    showWord(getNextWord(stat));
+    LearnWord.show(getNextWord(stat));
 });
 getElement('user-answer').addEventListener('keypress', (event) => {
     if (event.key === 'Enter') {
@@ -127,8 +121,9 @@ getElement('add-new-words').addEventListener('click', () => showNewWordsSection(
 document.addEventListener('keydown', documentKeydownHandler);
 initMultilinePlaceholder();
 initModeDropdown();
-let stat = createStat();
 if (hasWords()) {
-    showWord(getNextWord(stat));
+    LearnWord.show(getNextWord(stat));
 }
+new LearnWord();
+new EditWord();
 //# sourceMappingURL=main.js.map

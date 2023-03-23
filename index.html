@@ -14,12 +14,13 @@
         <div id="learn-word-wrapper" class="hidden">
             <div class="margin-btm">
                 <div><input id="word" class="width100" type="text" disabled></div>
-                <div><input id="user-answer" class="width100 test" type="text" autocomplete="off"></div>
+                <div><input id="user-answer" class="width100" type="text" autocomplete="off"></div>
                 <input id="correct-answer" type="text" class="hidden">
                 <div>
                     <button id="check" title="check the answer">check</button>
                     <button id="skip" title="drop the word from a current set"><u>s</u>kip</button>
                     <button id="show-answer" title="show the answer">show <u>a</u>nswer</button>
+                    <button title="edit word and translation" data-action="edit">edit</button>
                 </div>
             </div>
             <div>
@@ -31,6 +32,15 @@
             <div>
                 <button id="reset-storage" title="finish the current session">learn new words</button>
                 <button id="add-new-words" title="add new words to the current set">add new words</button>
+            </div>
+        </div>
+        <div id="edit-word-wrapper" class="hidden">
+            <div class="margin-btm">
+                <div><input id="edit-word-translation" class="width100" type="text"></div>
+                <div><input id="edit-word-title" class="width100" type="text"></div>
+                <div>
+                    <button data-action="save">save</button>
+                </div>
             </div>
         </div>
     </body>

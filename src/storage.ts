@@ -1,4 +1,4 @@
-import {ONE_BY_ONE_MODE, allModes} from './mode.js';
+import { ONE_BY_ONE_MODE, allModes } from './mode.js';
 import { createWords, Word } from './word.js';
 
 export function getAllWordsOrException(): Word[] {
@@ -10,8 +10,7 @@ export function getAllWordsOrException(): Word[] {
     return storedWords;
 }
 
-function getAllWords(): Word[]
-{
+function getAllWords(): Word[] {
     const storedWords = localStorage.getItem('words');
     if (storedWords === null) {
         return [];
@@ -20,8 +19,7 @@ function getAllWords(): Word[]
     return JSON.parse(storedWords);
 }
 
-export function hasWords(): boolean
-{
+export function hasWords(): boolean {
     const storedWords = localStorage.getItem('words');
     if (storedWords === null) {
         return false;
@@ -32,28 +30,32 @@ export function hasWords(): boolean
 
 //todo replace array with Words collection
 export function updateWords(words: Word[]) {
-
     const newWords = JSON.stringify(createWords(words).unique().toArray());
     localStorage.setItem('words', newWords);
+}
+
+export function replaceWord(prevWordKey: string, newWord: Word): void {
+    const words: Word[] = [];
+    getAllWordsOrException().forEach((word: Word) =>
+        words.push(word.en === prevWordKey ? newWord : word)
+    );
+    updateWords(words);
 }
 
 export function addWords(words: Word[]) {
     updateWords(getAllWords().concat(words));
 }
 
-export function getWord(key: string): Word
-{
+export function getWord(key: string): Word {
     return createWords(getAllWordsOrException()).get(key);
 }
 
 //todo replace with enum
-export function getMode(): string
-{
+export function getMode(): string {
     return localStorage.getItem('mode') ?? ONE_BY_ONE_MODE;
 }
 
-export function updateMode(mode: string): void
-{
+export function updateMode(mode: string): void {
     if (!allModes.includes(mode)) {
         throw new Error('invalid mode');
     }
