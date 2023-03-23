@@ -1,5 +1,4 @@
-import { getAllWordsOrException, getMode } from './storage.js';
-import { RANDOM_MODE } from './mode.js';
+import { getAllWordsOrException } from './storage.js';
 import { Stat } from './stat.js';
 
 const cyrillicPattern = /^[\u0400-\u04FF]+$/;
@@ -128,30 +127,21 @@ export function getNextWord(stat: Stat, prevWord?: string): Word {
     }
 
     if (prevWordIndex !== undefined) {
-        const word = allWords[prevWordIndex + 1];
-        if (word !== undefined) {
-            nextWord = word;
-        }
+        allWords.splice(prevWordIndex, 1);
+        const minShows = Math.min(
+            ...allWords.map((word: Word) => stat.get(word.en)?.shows ?? 0)
+        );
+        const words: Word[] = [];
+        allWords.forEach((word: Word) => {
+            const shows = stat.get(word.en)?.shows ?? 0;
+            if (shows - minShows < 1) {
+                words.push(word);
+            }
+        });
+        allWords = words;
     }
 
-    if (getMode() === RANDOM_MODE) {
-        if (prevWordIndex !== undefined) {
-            allWords.splice(prevWordIndex, 1);
-            const minShows = Math.min(
-                ...allWords.map((word: Word) => stat.get(word.en)?.shows ?? 0)
-            );
-            const words: Word[] = [];
-            allWords.forEach((word: Word) => {
-                const shows = stat.get(word.en)?.shows ?? 0;
-                if (shows - minShows < 1) {
-                    words.push(word);
-                }
-            });
-            allWords = words;
-        }
-
-        nextWord = allWords[Math.floor(Math.random() * allWords.length)];
-    }
+    nextWord = allWords[Math.floor(Math.random() * allWords.length)];
 
     return nextWord;
 }

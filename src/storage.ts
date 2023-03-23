@@ -1,4 +1,3 @@
-import { ONE_BY_ONE_MODE, allModes } from './mode.js';
 import { createWords, Word } from './word.js';
 
 export function getAllWordsOrException(): Word[] {
@@ -48,16 +47,4 @@ export function addWords(words: Word[]) {
 
 export function getWord(key: string): Word {
     return createWords(getAllWordsOrException()).get(key);
-}
-
-//todo replace with enum
-export function getMode(): string {
-    return localStorage.getItem('mode') ?? ONE_BY_ONE_MODE;
-}
-
-export function updateMode(mode: string): void {
-    if (!allModes.includes(mode)) {
-        throw new Error('invalid mode');
-    }
-    localStorage.setItem('mode', mode);
 }

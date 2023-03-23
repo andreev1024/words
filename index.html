@@ -1,43 +1,60 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en-US">
     <head>
         <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width">
-        <link rel="stylesheet" href="style.css">
+        <meta name="viewport" content="width=device-width" />
+        <link rel="stylesheet" href="style.css" />
         <script src="built/main.js" type="module"></script>
     </head>
     <body>
         <div id="new-words-wrapper">
-            <textarea id="new-words" placeholder="one один\nmother мама\ncat кот" rows="3"></textarea>
+            <textarea
+                id="new-words"
+                placeholder="one один\nmother мама\ncat кот"
+                rows="3"
+            ></textarea>
             <button id="learn" title="start a learn words session">Learn!</button>
         </div>
         <div id="learn-word-wrapper" class="hidden">
             <div class="margin-btm">
-                <div><input id="word" class="width100" type="text" disabled></div>
-                <div><input id="user-answer" class="width100" type="text" autocomplete="off"></div>
-                <input id="correct-answer" type="text" class="hidden">
+                <div><input id="word" class="width100" type="text" disabled /></div>
+                <div>
+                    <input
+                        id="user-answer"
+                        class="width100"
+                        type="text"
+                        autocomplete="off"
+                    />
+                </div>
+                <input id="correct-answer" type="text" class="hidden" />
                 <div>
                     <button id="check" title="check the answer">check</button>
-                    <button id="skip" title="drop the word from a current set"><u>s</u>kip</button>
-                    <button id="show-answer" title="show the answer">show <u>a</u>nswer</button>
-                    <button title="edit word and translation" data-action="edit">edit</button>
+                    <button id="skip" title="drop the word from a current set">
+                        <u>s</u>kip
+                    </button>
+                    <button id="show-answer" title="show the answer">
+                        show <u>a</u>nswer
+                    </button>
+                    <button title="edit word and translation" data-action="edit">
+                        edit
+                    </button>
                 </div>
             </div>
             <div>
-                <select id="mode" title="a learn words mode">
-                    <option value="oneByOne">one by one</option>
-                    <option value="random">random</option>
-                </select>
-            </div>
-            <div>
-                <button id="reset-storage" title="finish the current session">learn new words</button>
-                <button id="add-new-words" title="add new words to the current set">add new words</button>
+                <button id="reset-storage" title="finish the current session">
+                    learn new words
+                </button>
+                <button id="add-new-words" title="add new words to the current set">
+                    add new words
+                </button>
             </div>
         </div>
         <div id="edit-word-wrapper" class="hidden">
             <div class="margin-btm">
-                <div><input id="edit-word-translation" class="width100" type="text"></div>
-                <div><input id="edit-word-title" class="width100" type="text"></div>
+                <div>
+                    <input id="edit-word-translation" class="width100" type="text" />
+                </div>
+                <div><input id="edit-word-title" class="width100" type="text" /></div>
                 <div>
                     <button data-action="save">save</button>
                 </div>

@@ -1,5 +1,5 @@
 import { LearnWord } from './LearnWord.js';
-import { getAllWordsOrException, hasWords, updateWords, updateMode, addWords, getWord, getMode, } from './storage.js';
+import { getAllWordsOrException, hasWords, updateWords, addWords, getWord, } from './storage.js';
 import { parseNewWords, getNextWord } from './word.js';
 import { stat } from './stat.js';
 import { isHidden, getElement, getInputElement } from './html.js';
@@ -16,7 +16,6 @@ import { EditWord } from './EditWord.js';
 // H - выгрузить оставшиеся слова. Выучил половину набора. Потом хочу переключиться на новый набор. А позже обьединить и делать оба
 // M - изучение в контексте предложения
 // M - если пытаешся добавить новое слово, но не ввел ни одного, то будет ошибка и Пользователь застрянет на этом
-// L - выпилить one-by-one mode
 // транскрипции. Иногда важно запомнить произношение
 // режим Диктант
 // статистика после каждого цикла ИЛИ для сессии ИЛИ все время
@@ -37,9 +36,6 @@ import { EditWord } from './EditWord.js';
 const initMultilinePlaceholder = () => {
     const textarea = getInputElement('new-words');
     textarea.placeholder = textarea.placeholder.replace(/\\n/g, '\n');
-};
-const initModeDropdown = () => {
-    getInputElement('mode').value = getMode();
 };
 const getNewWords = () => {
     const newWords = getElement('new-words').value;
@@ -114,13 +110,11 @@ getElement('user-answer').addEventListener('keypress', (event) => {
     }
 });
 getElement('check').addEventListener('click', checkWord);
-getElement('mode').addEventListener('change', (event) => updateMode(event.target.value));
 getElement('skip').addEventListener('click', skipWord);
 getElement('show-answer').addEventListener('click', showAnswer);
 getElement('add-new-words').addEventListener('click', () => showNewWordsSection());
 document.addEventListener('keydown', documentKeydownHandler);
 initMultilinePlaceholder();
-initModeDropdown();
 if (hasWords()) {
     LearnWord.show(getNextWord(stat));
 }
