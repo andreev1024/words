@@ -48,3 +48,7 @@ export function addWords(words: Word[]) {
 export function getWord(key: string): Word {
     return createWords(getAllWordsOrException()).get(key);
 }
+
+export function resetWords(): void {
+    localStorage.removeItem('words');
+}

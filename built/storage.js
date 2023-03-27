@@ -36,4 +36,7 @@ export function addWords(words) {
 export function getWord(key) {
     return createWords(getAllWordsOrException()).get(key);
 }
+export function resetWords() {
+    localStorage.removeItem('words');
+}
 //# sourceMappingURL=storage.js.map

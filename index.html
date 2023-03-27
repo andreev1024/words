@@ -13,7 +13,9 @@
                 placeholder="one один\nmother мама\ncat кот"
                 rows="3"
             ></textarea>
-            <button id="learn" title="start a learn words session">Learn!</button>
+            <button data-action="learn" title="start a learn words session">
+                Learn!
+            </button>
         </div>
         <div id="learn-word-wrapper" class="hidden">
             <div class="margin-btm">
@@ -28,11 +30,11 @@
                 </div>
                 <input id="correct-answer" type="text" class="hidden" />
                 <div>
-                    <button id="check" title="check the answer">check</button>
-                    <button id="skip" title="drop the word from a current set">
+                    <button data-action="check" title="check the answer">check</button>
+                    <button data-action="skip" title="drop the word from a current set">
                         <u>s</u>kip
                     </button>
-                    <button id="show-answer" title="show the answer">
+                    <button data-action="show-answer" title="show the answer">
                         show <u>a</u>nswer
                     </button>
                     <button title="edit word and translation" data-action="edit">
@@ -41,10 +43,13 @@
                 </div>
             </div>
             <div>
-                <button id="reset-storage" title="finish the current session">
+                <button data-action="reset-storage" title="finish the current session">
                     learn new words
                 </button>
-                <button id="add-new-words" title="add new words to the current set">
+                <button
+                    data-action="add-new-words"
+                    title="add new words to the current set"
+                >
                     add new words
                 </button>
             </div>

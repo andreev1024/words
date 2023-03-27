@@ -1,14 +1,9 @@
+import { AddWords } from './AddWords.js';
 import { LearnWord } from './LearnWord.js';
-import {
-    getAllWordsOrException,
-    hasWords,
-    updateWords,
-    addWords,
-    getWord,
-} from './storage.js';
-import { parseNewWords, getNextWord } from './word.js';
+import { hasWords } from './storage.js';
+import { getNextWord } from './word.js';
 import { stat } from './stat.js';
-import { isHidden, getElement, getInputElement } from './html.js';
+import { getInputElement } from './html.js';
 import { EditWord } from './EditWord.js';
 
 // todo
@@ -53,100 +48,21 @@ const initMultilinePlaceholder = () => {
     textarea.placeholder = textarea.placeholder.replace(/\\n/g, '\n');
 };
 
-const getNewWords = () => {
-    const newWords = (getElement('new-words') as HTMLInputElement).value;
-
-    return parseNewWords(newWords);
-};
-
-const showNewWordsSection = () => {
-    getInputElement('new-words').value = '';
-    getElement('new-words-wrapper').classList.remove('hidden');
-    getElement('learn-word-wrapper').classList.add('hidden');
-};
-
-const showAnswer = () => {
-    const currentWord = getWord(getInputElement('correct-answer').value);
-    const wordElement = getInputElement('word');
-    wordElement.value =
-        wordElement.value === currentWord.ru ? currentWord.en : currentWord.ru;
-};
-
-const skipWord = () => {
-    const currentWord = getInputElement('correct-answer').value;
-    const nextWord = getNextWord(stat, currentWord);
-    const allWords = getAllWordsOrException();
-
-    const currentWordIndex = allWords.findIndex((word) => word.en === currentWord);
-    if (currentWordIndex === -1) {
-        throw new Error("word doesn't exist");
-    }
-
-    allWords.splice(currentWordIndex, 1);
-    updateWords(allWords);
-
-    allWords.length === 0 ? showNewWordsSection() : LearnWord.show(nextWord);
-};
-
-const checkWord = () => {
-    const userAnswerElement = getInputElement('user-answer');
-    const userAnswer = userAnswerElement.value;
-    const correctAnswer = getInputElement('correct-answer').value;
-    if (userAnswer.trim().toLowerCase() !== correctAnswer.toLowerCase()) {
-        userAnswerElement.classList.add('red');
-        setTimeout(() => getElement('user-answer').classList.remove('red'), 1000);
-        return;
-    }
-
-    stat.add(correctAnswer);
-
-    const nextWord = getNextWord(stat, correctAnswer);
-    LearnWord.show(nextWord);
-};
-
-const documentKeydownHandler = (event: KeyboardEvent) => {
+document.addEventListener('keydown', (event: KeyboardEvent) => {
     if (event.ctrlKey) {
-        if (event.key === 'a' && !isHidden(getElement('show-answer'))) {
-            showAnswer();
-            event.preventDefault();
-            return;
+        if (LearnWord.isActive()) {
+            if (event.key === 'a') {
+                LearnWord.showAnswer();
+                event.preventDefault();
+                return;
+            }
+            if (event.key === 's') {
+                LearnWord.skipWord();
+                return;
+            }
         }
-        if (event.key === 's' && !isHidden(getElement('skip'))) {
-            skipWord();
-            return;
-        }
-    }
-};
-
-getElement('reset-storage').addEventListener('click', () => {
-    localStorage.removeItem('words');
-    showNewWordsSection();
-});
-
-getElement('learn').addEventListener('click', () => {
-    const newWords = getNewWords();
-    if (newWords.length === 0) {
-        alert('Invalid input');
-        return;
-    }
-
-    stat.reset();
-
-    addWords(newWords);
-    LearnWord.show(getNextWord(stat));
-});
-
-getElement('user-answer').addEventListener('keypress', (event) => {
-    if (event.key === 'Enter') {
-        checkWord();
     }
 });
-
-getElement('check').addEventListener('click', checkWord);
-getElement('skip').addEventListener('click', skipWord);
-getElement('show-answer').addEventListener('click', showAnswer);
-getElement('add-new-words').addEventListener('click', () => showNewWordsSection());
-document.addEventListener('keydown', documentKeydownHandler);
 
 initMultilinePlaceholder();
 
@@ -154,5 +70,6 @@ if (hasWords()) {
     LearnWord.show(getNextWord(stat));
 }
 
+new AddWords();
 new LearnWord();
 new EditWord();
