@@ -56,7 +56,7 @@ export class LearnWord {
         LearnWord.#hide();
         EditWord.show(currentWord());
     }
-    static checkWord() {
+    static #checkWord() {
         const userAnswerElement = getInputElement('user-answer');
         const userAnswer = userAnswerElement.value;
         const correctAnswer = getInputElement('correct-answer').value;
@@ -76,7 +76,7 @@ export class LearnWord {
             'add-new-words': LearnWord.#showNewWordsSection,
             skip: LearnWord.skipWord,
             'reset-storage': LearnWord.#resetStorage,
-            check: LearnWord.checkWord,
+            check: LearnWord.#checkWord,
         };
         const action = event.target?.dataset?.action;
         const fn = handlers[action];
@@ -86,7 +86,7 @@ export class LearnWord {
     }
     #onKeyDown(event) {
         if (event.target.id === 'user-answer' && event.key === 'Enter') {
-            LearnWord.checkWord();
+            LearnWord.#checkWord();
         }
     }
     static #hide() {
