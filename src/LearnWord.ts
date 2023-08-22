@@ -33,8 +33,7 @@ export class LearnWord {
     static showAnswer(): void {
         const currentWord = getWord(getInputElement('correct-answer').value);
         const wordElement = getInputElement('word');
-        wordElement.value =
-            wordElement.value === currentWord.ru ? currentWord.en : currentWord.ru;
+        wordElement.value = wordElement.value === currentWord.ru ? currentWord.en : currentWord.ru;
     }
 
     static skipWord(): void {
@@ -50,9 +49,7 @@ export class LearnWord {
         allWords.splice(currentWordIndex, 1);
         updateWords(allWords);
 
-        allWords.length === 0
-            ? LearnWord.#showNewWordsSection()
-            : LearnWord.show(nextWord);
+        allWords.length === 0 ? LearnWord.#showNewWordsSection() : LearnWord.show(nextWord);
     }
 
     static #showNewWordsSection(): void {
@@ -96,7 +93,19 @@ export class LearnWord {
             'reset-storage': LearnWord.#resetStorage,
             check: LearnWord.#checkWord,
         };
-        const action = event.target?.dataset?.action;
+
+        let action;
+        for (const key in handlers) {
+            if (event.target.closest(`[data-action="${key}"]`)) {
+                action = key;
+                break;
+            }
+        }
+
+        if (!action) {
+            return;
+        }
+
         const fn = handlers[action];
         if (fn) {
             fn();

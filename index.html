@@ -2,68 +2,56 @@
 <html lang="en-US">
     <head>
         <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="stylesheet" href="style.css" />
         <script src="built/main.js" type="module"></script>
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+        />
     </head>
     <body>
-        <div id="new-words-wrapper">
-            <textarea
-                id="new-words"
-                placeholder="one один\nmother мама\ncat кот"
-                rows="3"
-            ></textarea>
-            <button data-action="learn" title="start a learn words session">
-                Learn!
-            </button>
-        </div>
-        <div id="learn-word-wrapper" class="hidden">
-            <div class="margin-btm">
-                <div><input id="word" class="width100" type="text" disabled /></div>
-                <div>
-                    <input
-                        id="user-answer"
-                        class="width100"
-                        type="text"
-                        autocomplete="off"
-                    />
+        <main>
+            <div id="new-words-wrapper">
+                <textarea id="new-words" placeholder="one один\nmother мама\ncat кот" rows="3"></textarea>
+                <button data-action="learn" title="begin the lesson">Let's start</button>
+            </div>
+            <div id="learn-word-wrapper" class="hidden">
+                <div class="row">
+                    <input id="word" class="width100" type="text" disabled />
+                    <button id="show-answer" data-action="show-answer" title="show the answer (ctrl + a)">
+                        <i class="fa-solid fa-eye"></i>
+                    </button>
+                    <button id="edit" title="edit" data-action="edit">
+                        <i class="fa-solid fa-edit"></i>
+                    </button>
                 </div>
+
+                <div class="row">
+                    <input id="user-answer" class="width100" type="text" autocomplete="off" />
+                    <button id="check" data-action="check" title="check the answer">
+                        <i class="fa-solid fa-check green"></i>
+                    </button>
+                    <button id="skip" data-action="skip" title="remove the word (ctrl + s)">
+                        <i class="fa-solid fa-trash m-red"></i>
+                    </button>
+                </div>
+
                 <input id="correct-answer" type="text" class="hidden" />
                 <div>
-                    <button data-action="check" title="check the answer">check</button>
-                    <button data-action="skip" title="drop the word from a current set">
-                        <u>s</u>kip
+                    <button data-action="reset-storage" title="finish the current session">
+                        learn new words
                     </button>
-                    <button data-action="show-answer" title="show the answer">
-                        show <u>a</u>nswer
-                    </button>
-                    <button title="edit word and translation" data-action="edit">
-                        edit
+                    <button data-action="add-new-words" title="add new words to the current set">
+                        add new words
                     </button>
                 </div>
             </div>
-            <div>
-                <button data-action="reset-storage" title="finish the current session">
-                    learn new words
-                </button>
-                <button
-                    data-action="add-new-words"
-                    title="add new words to the current set"
-                >
-                    add new words
-                </button>
+            <div id="edit-word-wrapper" class="hidden">
+                <input id="edit-word-translation" class="width100" type="text" />
+                <input id="edit-word-title" class="width100" type="text" />
+                <button data-action="save">save</button>
             </div>
-        </div>
-        <div id="edit-word-wrapper" class="hidden">
-            <div class="margin-btm">
-                <div>
-                    <input id="edit-word-translation" class="width100" type="text" />
-                </div>
-                <div><input id="edit-word-title" class="width100" type="text" /></div>
-                <div>
-                    <button data-action="save">save</button>
-                </div>
-            </div>
-        </div>
+        </main>
     </body>
 </html>

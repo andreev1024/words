@@ -1,13 +1,59 @@
+* {
+    box-sizing: border-box;
+}
+
 .hidden {
-    display: none;
+    display: none !important;
 }
-.margin-btm {
-    margin-bottom: .3em;
-}
+
 .width100 {
     width: 100%;
 }
 
 .red {
     color: red;
+}
+
+.m-red {
+    color: #b00020;
+}
+
+.green {
+    color: green;
+}
+
+html {
+    scroll-behavior: smooth;
+    width: 100%;
+}
+
+body {
+    margin: 1em auto;
+    max-width: 90%;
+}
+
+#new-words-wrapper,
+#learn-word-wrapper,
+#edit-word-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+input[type='text'] {
+    line-height: 1.2rem;
+    padding: 0 0.3rem;
+}
+
+.row {
+    display: flex;
+    flex-direction: row;
+    gap: 0.3rem;
+}
+
+#skip,
+#check,
+#edit,
+#show-answer {
+    min-width: 34px;
 }
