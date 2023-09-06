@@ -91,7 +91,9 @@ export class LearnWord {
         }
     }
     #onKeyDown(event) {
-        if (event.target.id === 'user-answer' && event.key === 'Enter') {
+        if (event.target instanceof HTMLInputElement &&
+            event.target.id === 'user-answer' &&
+            event.code === 'Enter') {
             LearnWord.#checkWord();
         }
     }

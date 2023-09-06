@@ -14,6 +14,9 @@ import { EditWord } from './EditWord.js';
 // FEATURES
 // если 5 раз подряд написал слово верно не использоваа подсказку - показываем уведомление Молодец
 // дашборд с прогрессом, очками, как в rs app
+// H - когда добавляем слова, а не начинаем с начала, кнопка должна быть подписана как Add, а не Let's start
+// H - версионность для css файлов
+// H - webpack hot reload
 // H - дизайн
 // H - должен работать без интернета
 // H - должен работать на разных устройствах (мобила, десктоп) и хранить стейт
@@ -50,12 +53,12 @@ const initMultilinePlaceholder = () => {
 document.addEventListener('keydown', (event) => {
     if (event.ctrlKey) {
         if (LearnWord.isActive()) {
-            if (event.key === 'a') {
+            if (event.code === 'KeyA') {
                 LearnWord.showAnswer();
                 event.preventDefault();
                 return;
             }
-            if (event.key === 's') {
+            if (event.code === 'KeyS') {
                 LearnWord.skipWord();
                 return;
             }
