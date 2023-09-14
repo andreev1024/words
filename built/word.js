@@ -109,7 +109,6 @@ export function wordsEqual(a, b) {
     return normalize(a) === normalize(b);
 }
 function normalize(word) {
-    console.log(word);
     const toBeForms = [
         [/['’`]m/gi, ' am'],
         [/['’`]s/gi, ' is'],
@@ -118,10 +117,15 @@ function normalize(word) {
     toBeForms.forEach(([pattern, replacement]) => {
         word = word.replace(pattern, replacement);
     });
+    const tensesForms = [
+        [/['’`]ll/gi, ' will'], // I will - I'll
+    ];
+    tensesForms.forEach(([pattern, replacement]) => {
+        word = word.replace(pattern, replacement);
+    });
     const replaceMultipleSpaces = /\s+/g;
     word = word.replace(replaceMultipleSpaces, ' ');
     word = word.trim().toLowerCase();
-    console.log(word);
     return word;
 }
 //# sourceMappingURL=word.js.map

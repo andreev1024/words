@@ -154,8 +154,14 @@ function normalize(word: string): string {
         [/['’`]s/gi, ' is'], // He is - he's
         [/['’`]re/gi, ' are'], // You are - you're
     ];
-
     toBeForms.forEach(([pattern, replacement]) => {
+        word = word.replace(pattern, replacement);
+    });
+
+    const tensesForms: [RegExp, string][] = [
+        [/['’`]ll/gi, ' will'], // I will - I'll
+    ];
+    tensesForms.forEach(([pattern, replacement]) => {
         word = word.replace(pattern, replacement);
     });
 
