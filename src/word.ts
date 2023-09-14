@@ -128,9 +128,7 @@ export function getNextWord(stat: Stat, prevWord?: string): Word {
 
     if (prevWordIndex !== undefined) {
         allWords.splice(prevWordIndex, 1);
-        const minShows = Math.min(
-            ...allWords.map((word: Word) => stat.get(word.en)?.shows ?? 0)
-        );
+        const minShows = Math.min(...allWords.map((word: Word) => stat.get(word.en)?.shows ?? 0));
         const words: Word[] = [];
         allWords.forEach((word: Word) => {
             const shows = stat.get(word.en)?.shows ?? 0;
@@ -144,4 +142,26 @@ export function getNextWord(stat: Stat, prevWord?: string): Word {
     nextWord = allWords[Math.floor(Math.random() * allWords.length)];
 
     return nextWord;
+}
+
+export function wordsEqual(a: string, b: string): boolean {
+    return normalize(a) === normalize(b);
+}
+
+function normalize(word: string): string {
+    const toBeForms: [RegExp, string][] = [
+        [/['’`]m/gi, ' am'], // I am - I'm
+        [/['’`]s/gi, ' is'], // He is - he's
+        [/['’`]re/gi, ' are'], // You are - you're
+    ];
+
+    toBeForms.forEach(([pattern, replacement]) => {
+        word = word.replace(pattern, replacement);
+    });
+
+    const replaceMultipleSpaces = /\s+/g;
+    word = word.replace(replaceMultipleSpaces, ' ');
+    word = word.trim().toLowerCase();
+
+    return word;
 }

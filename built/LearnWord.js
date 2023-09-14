@@ -1,4 +1,4 @@
-import { getNextWord } from './word.js';
+import { getNextWord, wordsEqual } from './word.js';
 import { currentWord } from './state.js';
 import { getInputElement, hide, getElement, show, isHidden } from './html.js';
 import { EditWord } from './EditWord.js';
@@ -57,7 +57,7 @@ export class LearnWord {
         const userAnswerElement = getInputElement('user-answer');
         const userAnswer = userAnswerElement.value;
         const correctAnswer = getInputElement('correct-answer').value;
-        if (userAnswer.trim().toLowerCase() !== correctAnswer.toLowerCase()) {
+        if (!wordsEqual(userAnswer, correctAnswer)) {
             userAnswerElement.classList.add('red');
             setTimeout(() => getElement('user-answer').classList.remove('red'), 1000);
             return;

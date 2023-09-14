@@ -105,4 +105,23 @@ export function getNextWord(stat, prevWord) {
     nextWord = allWords[Math.floor(Math.random() * allWords.length)];
     return nextWord;
 }
+export function wordsEqual(a, b) {
+    return normalize(a) === normalize(b);
+}
+function normalize(word) {
+    console.log(word);
+    const toBeForms = [
+        [/['’`]m/gi, ' am'],
+        [/['’`]s/gi, ' is'],
+        [/['’`]re/gi, ' are'], // You are - you're
+    ];
+    toBeForms.forEach(([pattern, replacement]) => {
+        word = word.replace(pattern, replacement);
+    });
+    const replaceMultipleSpaces = /\s+/g;
+    word = word.replace(replaceMultipleSpaces, ' ');
+    word = word.trim().toLowerCase();
+    console.log(word);
+    return word;
+}
 //# sourceMappingURL=word.js.map
