@@ -1,8 +1,8 @@
-import { LearnWord } from './LearnWord.js';
-import { stat } from './stat.js';
-import { getElement } from './html.js';
-import { getNextWord, parseNewWords } from './word.js';
-import { addWords } from './storage.js';
+import { LearnWord } from './LearnWord';
+import { stat } from './stat';
+import { getElement } from './html';
+import { getNextWord, parseNewWords } from './word';
+import { addWords } from './storage';
 
 export class AddWords {
     #elem: HTMLElement;

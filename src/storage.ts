@@ -1,4 +1,4 @@
-import { createWords, Word } from './word.js';
+import { createWords, Word } from './word';
 
 export function getAllWordsOrException(): Word[] {
     const storedWords = getAllWords();
@@ -35,9 +35,7 @@ export function updateWords(words: Word[]) {
 
 export function replaceWord(prevWordKey: string, newWord: Word): void {
     const words: Word[] = [];
-    getAllWordsOrException().forEach((word: Word) =>
-        words.push(word.en === prevWordKey ? newWord : word)
-    );
+    getAllWordsOrException().forEach((word: Word) => words.push(word.en === prevWordKey ? newWord : word));
     updateWords(words);
 }
 

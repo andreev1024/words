@@ -1,8 +1,8 @@
-import { stat } from './stat.js';
-import { LearnWord } from './LearnWord.js';
-import { getInputElement, getElement, show, hide } from './html.js';
-import { replaceWord } from './storage.js';
-import { createWord, Word } from './word.js';
+import { stat } from './stat';
+import { LearnWord } from './LearnWord';
+import { getInputElement, getElement, show, hide } from './html';
+import { replaceWord } from './storage';
+import { createWord, Word } from './word';
 
 export class EditWord {
     #elem: HTMLElement;

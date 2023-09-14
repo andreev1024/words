@@ -1,10 +1,10 @@
-import { AddWords } from './AddWords.js';
-import { LearnWord } from './LearnWord.js';
-import { hasWords } from './storage.js';
-import { getNextWord } from './word.js';
-import { stat } from './stat.js';
-import { getInputElement } from './html.js';
-import { EditWord } from './EditWord.js';
+import { AddWords } from './AddWords';
+import { LearnWord } from './LearnWord';
+import { hasWords } from './storage';
+import { getNextWord } from './word';
+import { stat } from './stat';
+import { getInputElement } from './html';
+import { EditWord } from './EditWord';
 
 // todo
 

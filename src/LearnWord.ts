@@ -1,9 +1,9 @@
-import { Word, getNextWord, wordsEqual } from './word.js';
-import { currentWord } from './state.js';
-import { getInputElement, hide, getElement, show, isHidden } from './html.js';
-import { EditWord } from './EditWord.js';
-import { getWord, getAllWordsOrException, updateWords, resetWords } from './storage.js';
-import { stat } from './stat.js';
+import { Word, getNextWord, wordsEqual } from './word';
+import { currentWord } from './state';
+import { getInputElement, hide, getElement, show, isHidden } from './html';
+import { EditWord } from './EditWord';
+import { getWord, getAllWordsOrException, updateWords, resetWords } from './storage';
+import { stat } from './stat';
 
 export class LearnWord {
     #elem: HTMLElement;

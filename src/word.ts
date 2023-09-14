@@ -1,5 +1,5 @@
-import { getAllWordsOrException } from './storage.js';
-import { Stat } from './stat.js';
+import { getAllWordsOrException } from './storage';
+import { Stat } from './stat';
 
 const cyrillicPattern = /^[\u0400-\u04FF]+$/;
 
