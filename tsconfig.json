@@ -1,10 +1,11 @@
 {
-    "compilerOptions": {
-      "outDir": "./built",
-      "allowJs": true,
-      "target": "ESNext",
-      "strict": true,
-      "sourceMap": true
-    },
-    "include": ["./src/*"]
-  }
+  "compilerOptions": {
+    "outDir": "./built",
+    "allowJs": true,
+    "noImplicitAny": false,
+    "target": "ESNext",
+    "strict": true,
+    "sourceMap": true
+  },
+  "include": ["./src/*"]
+}

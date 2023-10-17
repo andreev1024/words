@@ -5,6 +5,7 @@ import { getNextWord } from './word';
 import { stat } from './stat';
 import { getInputElement } from './html';
 import { EditWord } from './EditWord';
+import '../style.css';
 
 // todo
 
@@ -53,30 +54,30 @@ import { EditWord } from './EditWord';
 // write tests
 
 const initMultilinePlaceholder = () => {
-    const textarea = getInputElement('new-words');
-    textarea.placeholder = textarea.placeholder.replace(/\\n/g, '\n');
+  const textarea = getInputElement('new-words');
+  textarea.placeholder = textarea.placeholder.replace(/\\n/g, '\n');
 };
 
 document.addEventListener('keydown', (event: KeyboardEvent) => {
-    if (event.ctrlKey) {
-        if (LearnWord.isActive()) {
-            if (event.code === 'KeyA') {
-                LearnWord.showAnswer();
-                event.preventDefault();
-                return;
-            }
-            if (event.code === 'KeyS') {
-                LearnWord.skipWord();
-                return;
-            }
-        }
+  if (event.ctrlKey) {
+    if (LearnWord.isActive()) {
+      if (event.code === 'KeyA') {
+        LearnWord.showAnswer();
+        event.preventDefault();
+        return;
+      }
+      if (event.code === 'KeyS') {
+        LearnWord.skipWord();
+        return;
+      }
     }
+  }
 });
 
 initMultilinePlaceholder();
 
 if (hasWords()) {
-    LearnWord.show(getNextWord(stat));
+  LearnWord.show(getNextWord(stat));
 }
 
 new AddWords();
