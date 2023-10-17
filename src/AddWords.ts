@@ -13,9 +13,7 @@ export class AddWords {
   }
 
   #learn(): void {
-    const newWords = parseNewWords(
-      (getElement('new-words') as HTMLInputElement).value
-    );
+    const newWords = parseNewWords((getElement('new-words') as HTMLInputElement).value);
 
     if (newWords.length === 0) {
       alert('Invalid input');

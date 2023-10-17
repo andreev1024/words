@@ -6,123 +6,119 @@ import { getWord, getAllWordsOrException, updateWords, resetWords } from './stor
 import { stat } from './stat';
 
 export class LearnWord {
-    #elem: HTMLElement;
+  #elem: HTMLElement;
 
-    constructor() {
-        this.#elem = getElement('learn-word-wrapper');
-        this.#elem.onclick = this.#onClick.bind(this);
-        this.#elem.onkeydown = this.#onKeyDown.bind(this);
+  constructor() {
+    this.#elem = getElement('learn-word-wrapper');
+    this.#elem.onclick = this.#onClick.bind(this);
+    this.#elem.onkeydown = this.#onKeyDown.bind(this);
+  }
+
+  static show(word: Word): void {
+    hide(getElement('new-words-wrapper'));
+
+    getInputElement('word').value = word.ru;
+    getInputElement('correct-answer').value = word.en;
+
+    const userAnswerInputElement = getInputElement('user-answer');
+    userAnswerInputElement.value = '';
+    show(getElement('learn-word-wrapper'));
+    userAnswerInputElement.focus();
+  }
+
+  static isActive(): boolean {
+    return !isHidden(getElement('learn-word-wrapper'));
+  }
+
+  static showAnswer(): void {
+    const currentWord = getWord(getInputElement('correct-answer').value);
+    const wordElement = getInputElement('word');
+    wordElement.value = wordElement.value === currentWord.ru ? currentWord.en : currentWord.ru;
+  }
+
+  static skipWord(): void {
+    const currentWord = getInputElement('correct-answer').value;
+    const nextWord = getNextWord(stat, currentWord);
+    const allWords = getAllWordsOrException();
+
+    const currentWordIndex = allWords.findIndex((word) => word.en === currentWord);
+    if (currentWordIndex === -1) {
+      throw new Error("word doesn't exist");
     }
 
-    static show(word: Word): void {
-        hide(getElement('new-words-wrapper'));
+    allWords.splice(currentWordIndex, 1);
+    updateWords(allWords);
 
-        getInputElement('word').value = word.ru;
-        getInputElement('correct-answer').value = word.en;
+    allWords.length === 0 ? LearnWord.#showNewWordsSection() : LearnWord.show(nextWord);
+  }
 
-        const userAnswerInputElement = getInputElement('user-answer');
-        userAnswerInputElement.value = '';
-        show(getElement('learn-word-wrapper'));
-        userAnswerInputElement.focus();
+  static #showNewWordsSection(): void {
+    getInputElement('new-words').value = '';
+    show(getElement('new-words-wrapper'));
+    hide(getElement('learn-word-wrapper'));
+  }
+
+  static #resetStorage(): void {
+    resetWords();
+    LearnWord.#showNewWordsSection();
+  }
+
+  static #edit(): void {
+    LearnWord.#hide();
+    EditWord.show(currentWord());
+  }
+
+  static #checkWord(): void {
+    const userAnswerElement = getInputElement('user-answer');
+    const userAnswer = userAnswerElement.value;
+    const correctAnswer = getInputElement('correct-answer').value;
+    if (!wordsEqual(userAnswer, correctAnswer)) {
+      userAnswerElement.classList.add('red');
+      setTimeout(() => getElement('user-answer').classList.remove('red'), 1000);
+      return;
     }
 
-    static isActive(): boolean {
-        return !isHidden(getElement('learn-word-wrapper'));
+    stat.add(correctAnswer);
+
+    const nextWord = getNextWord(stat, correctAnswer);
+    LearnWord.show(nextWord);
+  }
+
+  #onClick(event: any) {
+    const handlers: { [key: string]: { (): void } } = {
+      edit: LearnWord.#edit,
+      'show-answer': LearnWord.showAnswer,
+      'add-new-words': LearnWord.#showNewWordsSection,
+      skip: LearnWord.skipWord,
+      'reset-storage': LearnWord.#resetStorage,
+      check: LearnWord.#checkWord,
+    };
+
+    let action;
+    for (const key in handlers) {
+      if (event.target.closest(`[data-action="${key}"]`)) {
+        action = key;
+        break;
+      }
     }
 
-    static showAnswer(): void {
-        const currentWord = getWord(getInputElement('correct-answer').value);
-        const wordElement = getInputElement('word');
-        wordElement.value = wordElement.value === currentWord.ru ? currentWord.en : currentWord.ru;
+    if (!action) {
+      return;
     }
 
-    static skipWord(): void {
-        const currentWord = getInputElement('correct-answer').value;
-        const nextWord = getNextWord(stat, currentWord);
-        const allWords = getAllWordsOrException();
-
-        const currentWordIndex = allWords.findIndex((word) => word.en === currentWord);
-        if (currentWordIndex === -1) {
-            throw new Error("word doesn't exist");
-        }
-
-        allWords.splice(currentWordIndex, 1);
-        updateWords(allWords);
-
-        allWords.length === 0 ? LearnWord.#showNewWordsSection() : LearnWord.show(nextWord);
+    const fn = handlers[action];
+    if (fn) {
+      fn();
     }
+  }
 
-    static #showNewWordsSection(): void {
-        getInputElement('new-words').value = '';
-        show(getElement('new-words-wrapper'));
-        hide(getElement('learn-word-wrapper'));
+  #onKeyDown(event: KeyboardEvent) {
+    if (event.target instanceof HTMLInputElement && event.target.id === 'user-answer' && event.code === 'Enter') {
+      LearnWord.#checkWord();
     }
+  }
 
-    static #resetStorage(): void {
-        resetWords();
-        LearnWord.#showNewWordsSection();
-    }
-
-    static #edit(): void {
-        LearnWord.#hide();
-        EditWord.show(currentWord());
-    }
-
-    static #checkWord(): void {
-        const userAnswerElement = getInputElement('user-answer');
-        const userAnswer = userAnswerElement.value;
-        const correctAnswer = getInputElement('correct-answer').value;
-        if (!wordsEqual(userAnswer, correctAnswer)) {
-            userAnswerElement.classList.add('red');
-            setTimeout(() => getElement('user-answer').classList.remove('red'), 1000);
-            return;
-        }
-
-        stat.add(correctAnswer);
-
-        const nextWord = getNextWord(stat, correctAnswer);
-        LearnWord.show(nextWord);
-    }
-
-    #onClick(event: any) {
-        const handlers: { [key: string]: { (): void } } = {
-            edit: LearnWord.#edit,
-            'show-answer': LearnWord.showAnswer,
-            'add-new-words': LearnWord.#showNewWordsSection,
-            skip: LearnWord.skipWord,
-            'reset-storage': LearnWord.#resetStorage,
-            check: LearnWord.#checkWord,
-        };
-
-        let action;
-        for (const key in handlers) {
-            if (event.target.closest(`[data-action="${key}"]`)) {
-                action = key;
-                break;
-            }
-        }
-
-        if (!action) {
-            return;
-        }
-
-        const fn = handlers[action];
-        if (fn) {
-            fn();
-        }
-    }
-
-    #onKeyDown(event: KeyboardEvent) {
-        if (
-            event.target instanceof HTMLInputElement &&
-            event.target.id === 'user-answer' &&
-            event.code === 'Enter'
-        ) {
-            LearnWord.#checkWord();
-        }
-    }
-
-    static #hide(): void {
-        hide(getInputElement('learn-word-wrapper'));
-    }
+  static #hide(): void {
+    hide(getInputElement('learn-word-wrapper'));
+  }
 }
